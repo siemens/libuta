@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Unified Trust Anchor API
+#
+# Copyright (c) Siemens Mobility GmbH, 2020
+# 
+# Authors:
+#  Thomas Zeschg <thomas.zeschg@siemens.com>
+#
+# This work is licensed under the terms of the Apache Software License 2.0.  See
+# the LICENSE file in the top-level directory.           
+#               
+# SPDX-License-Identifier: Apache-2.0
+
+MYPATH=$(dirname ${BASH_SOURCE[0]})
+MAPFILE="$MYPATH/hw.map"
+invalid_flags() 
+{
+    echo "Invalid configuration" >/dev/stderr
+    echo "usage: $0 <configuration>" >/dev/stderr
+    local valid_configs=$(awk -F, '{ printf "%s ", $2; }' $MAPFILE )
+    echo "valid configurations (based on debian/hw.map): $valid_configs" >/dev/stderr
+    exit 1
+}
+
+[ "$1" == "" ] && invalid_flags # no parameters guard
+
+# extract configure name (a deb package suffix)
+CONFNAME=$(awk -F, '{print $2;}' $MAPFILE | grep $1 | head -n1)
+[ "$CONFNAME" == "" ] && invalid_flags # unknown config guard
+
+# extract hardware name (used for HARDWARE build flag)
+HWNAME=$(grep $CONFNAME $MAPFILE | head -n1 | awk -F, '{print $1;}')
+
+# generate appropriate rules file using extracted names
+sed -e "s/%confname%/$CONFNAME/g" -e "s/%hwname%/$HWNAME/g" "$MYPATH/rules.in" > "$MYPATH/rules"
+chmod +x "$MYPATH/rules"
+
+# create "Conflicts" line using all other known configure names
+CONFLICTS=$(awk -F, "{ if (\$2 != \"$CONFNAME\") printf \"libuta-%s, \", \$2;}" $MAPFILE| head -c-2)
+# generate appropriate control file using extracted names and conflicts
+sed -e "s/%confname%/$CONFNAME/g" -e "s/%conflicts%/$CONFLICTS/g" "$MYPATH/control.in" > "$MYPATH/control"

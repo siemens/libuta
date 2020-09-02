@@ -1,0 +1,56 @@
+#!/usr/bin/make -f
+
+# Unified Trust Anchor API
+#
+# Copyright (c) Siemens Mobility GmbH, 2020
+# 
+# Authors:
+#  Thomas Zeschg <thomas.zeschg@siemens.com>
+#
+# This work is licensed under the terms of the Apache Software License 2.0.  See
+# the LICENSE file in the top-level directory.           
+#               
+# SPDX-License-Identifier: Apache-2.0
+
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+#DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+# see FEATURE AREAS in dpkg-buildflags(1)
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# package maintainers to append LDFLAGS
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+PKGNAME=libuta
+PREFIX=/usr
+DEVDIR=$(PWD)/debian/$(PKGNAME)-dev
+LIBDIR=$(PWD)/debian/$(PKGNAME)-%confname%
+CC=$(DEB_HOST_GNU_TYPE)-gcc
+
+
+ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
+CROSSFLAG="--host=$(DEB_HOST_GNU_TYPE)"
+endif
+
+%:
+	dh $@
+
+
+# dh_make generated override targets
+# This is example for Cmake (See https://bugs.debian.org/641051 )
+override_dh_auto_configure:
+	CC="$(CC)" ./configure $(CROSSFLAG) HARDWARE=%hwname%
+
+override_dh_auto_build:
+	$(MAKE) prefix=$(PREFIX) -j4
+
+override_dh_auto_install:
+	$(MAKE) prefix=$(PREFIX) DESTDIR=$(LIBDIR) install-exec
+	$(MAKE) prefix=$(PREFIX) DESTDIR=$(DEVDIR) install-data	
+
+# Needed to package TPM_IBM variant, because TSS not available as package
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info

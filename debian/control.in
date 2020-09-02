@@ -1,0 +1,22 @@
+Source: libuta
+Priority: optional
+Maintainer: Thomas Zeschg <hermann.seuschek@siemens.com>
+Standards-Version: 4.0.0
+Build-Depends: pkg-config, dh-autoreconf, m4
+Section: libs
+Homepage: https://github.com/siemens/libuta
+
+Package: libuta-%confname%
+Architecture: any
+Provides: libuta
+Conflicts: %conflicts%
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Unified Trust Anchor API
+ Unified Trust Anchor API
+
+Package: libuta-dev
+Section: libdevel
+Architecture: all
+Depends: libuta
+Description: Unified Trust Anchor API header
+ Unified Trust Anchor API header files

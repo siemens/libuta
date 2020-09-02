@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Unified Trust Anchor API
+#
+# Copyright (c) Siemens Mobility GmbH, 2020
+# 
+# Authors:
+#  Thomas Zeschg <thomas.zeschg@siemens.com>
+#
+# This work is licensed under the terms of the Apache Software License 2.0.  See
+# the LICENSE file in the top-level directory.           
+#               
+# SPDX-License-Identifier: Apache-2.0
+
+set -e
+
+AUTORECONF=${AUTORECONF:-autoreconf}
+${AUTORECONF} --install --sym

@@ -1,0 +1,23 @@
+# Patch for the IBM TSS makefile to include custom_hmac_key.c
+#
+# Copyright (c) Siemens Mobility GmbH, 2020
+#
+# Authors:
+#  Thomas Zeschg <thomas.zeschg@siemens.com>
+#
+# This work is licensed under the terms of the Apache Software License 2.0.  See
+# the LICENSE file in the top-level directory.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+--- makefile	2017-07-17 21:52:31.000000000 +0200
++++ makefile_new	2020-06-05 09:33:53.249387597 +0200
+@@ -417,6 +417,8 @@
+ 			$(CC) $(LNFLAGS) $(LNAFLAGS) ntc2preconfig.o $(LNALIBS) -o ntc2preconfig
+ ntc2lockconfig:		ntc2lockconfig.o $(LIBTSS)
+ 			$(CC) $(LNFLAGS) $(LNAFLAGS) ntc2lockconfig.o $(LNALIBS) -o ntc2lockconfig
++custom_hmac_key:	tss2/tss.h custom_hmac_key.o $(LIBTSS)
++			$(CC) $(LNFLAGS) $(LNAFLAGS) custom_hmac_key.o $(LNALIBS) -o custom_hmac_key
+ 
+ # for applications, not for TSS library
+ 

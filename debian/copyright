@@ -1,0 +1,7 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: libuta
+Upstream-Contact: Thomas Zeschg <thomas.zeschg@siemens.com>
+
+Files: *
+Copyright: 2020 Siemens Mobility AG
+License: Apache-2.0
