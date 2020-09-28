@@ -34,5 +34,5 @@ config.h.in~
 src/mbedtls
 /html
 /latex
-uta_get_passphrase
-uta_reg_test
+*uta_get_passphrase/uta_get_passphrase
+*uta_reg_test/uta_reg_test
