@@ -15,9 +15,9 @@
 m4_define([mbedtls_ref], [mbedtls-2.16.6])
 
 # Versioning
-m4_define([major_version], [0])
-m4_define([minor_version], [1])
-m4_define([patch_version], [0])
+m4_define([major_version], [1])
+m4_define([minor_version], [0])
+m4_define([patch_version], [1])
 
 AC_PREREQ([2.69])
 AC_INIT([unified_trust_anchor_api], [major_version.minor_version.patch_version], [thomas.zeschg@siemens.com])
