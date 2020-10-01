@@ -1,3 +1,9 @@
+libuta (1.0.1-0) stable; urgency=medium
+
+  * Added debian package generation for key derivation tool
+
+ -- Benjamin Schilling <schilling.benjamin@siemens.com>  Mon, 28 Sep 2020 16:43:59 +0200
+
 libuta (1.0.0-0) stable; urgency=medium
 
   * Initial release
