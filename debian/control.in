@@ -20,3 +20,9 @@ Architecture: all
 Depends: libuta
 Description: Unified Trust Anchor API header
  Unified Trust Anchor API header files
+
+Package: libuta-derive-tool
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libuta
+Description: Unified Trust Anchor API - Key derivation tool
+ Key derivation commandline tool using the Unified Trust Anchor API

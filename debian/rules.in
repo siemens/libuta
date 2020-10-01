@@ -28,6 +28,7 @@ PKGNAME=libuta
 PREFIX=/usr
 DEVDIR=$(PWD)/debian/$(PKGNAME)-dev
 LIBDIR=$(PWD)/debian/$(PKGNAME)-%confname%
+KEY_DERIVE_TOOL_DIR=$(PWD)/debian/$(PKGNAME)-derive-tool
 CC=$(DEB_HOST_GNU_TYPE)-gcc
 
 
@@ -42,14 +43,17 @@ endif
 # dh_make generated override targets
 # This is example for Cmake (See https://bugs.debian.org/641051 )
 override_dh_auto_configure:
-	CC="$(CC)" ./configure $(CROSSFLAG) HARDWARE=%hwname%
+	CC="$(CC)" ./configure $(CROSSFLAG) HARDWARE=%hwname% --enable-tools
 
 override_dh_auto_build:
 	$(MAKE) prefix=$(PREFIX) -j4
 
 override_dh_auto_install:
 	$(MAKE) prefix=$(PREFIX) DESTDIR=$(LIBDIR) install-exec
-	$(MAKE) prefix=$(PREFIX) DESTDIR=$(DEVDIR) install-data	
+	$(MAKE) prefix=$(PREFIX) DESTDIR=$(DEVDIR) install-data
+	mkdir -p $(KEY_DERIVE_TOOL_DIR)$(PREFIX)/bin
+	mv $(LIBDIR)$(PREFIX)/bin $(KEY_DERIVE_TOOL_DIR)$(PREFIX)/
+	rm $(KEY_DERIVE_TOOL_DIR)$(PREFIX)/bin/uta_reg_test
 
 # Needed to package TPM_IBM variant, because TSS not available as package
 override_dh_shlibdeps:

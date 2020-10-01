@@ -146,11 +146,12 @@ on the build machine.
 * The resulting package is built into higher (`../`) directory
 * `libuta-dev` package is built in every case and contains the header files
   needed for development
+* `libuta-derive-tool` package contains the `uta_get_passphrase` tool described below
 * Platform-specific `libuta` libraries are set to conflict to each other, you
   may have only one installed at one platform.
 
 #### Remarks
-* Currently the packaging does not contain the UTA command line tools.
+* Currently the packaging does not contain the UTA uta_reg_test command line tool.
 
 ## Tools
 The project containes some command line tools, which can be compiled using the
