@@ -9,7 +9,7 @@
 * @author Thomas Zeschg <thomas.zeschg@siemens.com>
 *
 * @license This work is licensed under the terms of the Apache Software License 
-* 2.0. See the LICENSE file in the top-level directory.
+* 2.0. See the COPYING file in the top-level directory.
 *
 * SPDX-License-Identifier: Apache-2.0
 */
