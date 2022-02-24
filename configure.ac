@@ -124,6 +124,7 @@ AC_CHECK_FUNCS([memset munmap])
 AC_CONFIG_FILES([Makefile
                  src/tools/uta_get_passphrase/Makefile
                  src/tools/uta_reg_test/Makefile
+                 src/provisioning/tpm_ibm/Makefile
                  src/lib/Makefile])
 AC_OUTPUT
 
