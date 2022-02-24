@@ -389,22 +389,7 @@ rc = uta.get_version(uta_context, &version);
 ```
 
 ## Setting up the IBM software stack
-* Download the [IBM software stack v1045](https://sourceforge.net/projects/ibmtpm20tss/files/ibmtss1045.tar.gz/download)
-* Extract the project
-* Copy the files from [tpm_ibm](src/provisioning/tpm_ibm/) to ibmtss1045/utils
-* Patch the makefile using `patch makefile < makefile.patch`
-* Run `export ALL=custom_hmac_key`
-* If a Linux Resource Manager is available on the system (/dev/tpmrm0) run 
-  `export CCFLAGS='-DTPM_DATA_DIR_DEFAULT="\"/var/lib/tpm_ibm\"" -DTPM_INTERFACE_TYPE_DEFAULT="\"dev\"" -DTPM_DEVICE_DEFAULT="\"/dev/tpmrm0\""'`,
-  otherwise run `export CCFLAGS='-DTPM_DATA_DIR_DEFAULT="\"/var/lib/tpm_ibm\"" -DTPM_INTERFACE_TYPE_DEFAULT="\"dev\""'`
-  Note that the path to the handle files `/var/lib/tpm_ibm` is also hardcoded in
-  the install script.
-* Run `make`
-* Add group tpm `sudo groupadd tpm`
-* Add tpm group to user `sudo usermod -aG tpm <username>`
-* Run `sudo ./install.sh`
-* Run `sudo ldconfig` to update the dynamic library cache
-* Reload udev rules and group info or reboot the system
+* The software stack comes packaged in debian. The package `libtss-dev` needs to be installed.
 
 ## TPM-Provisioning
 Before the provisioning step the IBM stack has to be set up as described in
