@@ -205,6 +205,38 @@ uta_rc tpm_open(const uta_context_v1_t *tpm_context)
         return UTA_TA_ERROR;
     }
 
+#ifdef CONFIGURED_TPM_INTERFACE_TYPE
+    /* Set device type to physical device, not the default in debian package */
+    rc = TSS_SetProperty(tpm_context_w->tssContext, TPM_INTERFACE_TYPE, CONFIGURED_TPM_INTERFACE_TYPE);
+    if(rc != 0)
+    {
+        rc = TSS_Delete(tpm_context->tssContext);
+        return UTA_TA_ERROR;
+    }
+#endif
+
+
+#ifdef CONFIGURED_TPM_DATA_DIR
+    /* Set persistent data storage directory, . in debian package */
+    rc = TSS_SetProperty(tpm_context_w->tssContext, TPM_DATA_DIR, CONFIGURED_TPM_DATA_DIR);
+    if(rc != 0)
+    {
+        rc = TSS_Delete(tpm_context->tssContext);
+        return UTA_TA_ERROR;
+    }
+#endif
+
+
+#ifdef CONFIGURED_TPM_DEVICE
+    /* Set tpm resource manager for parallel access */
+    rc = TSS_SetProperty(tpm_context_w->tssContext, TPM_DEVICE, CONFIGURED_TPM_DEVICE);
+    if(rc != 0)
+    {
+        rc = TSS_Delete(tpm_context->tssContext);
+        return UTA_TA_ERROR;
+    }
+#endif
+
     /* Starting HMAC session */
     rc = tpm_start_hmac_session(tpm_context);
     if(rc != 0) 
