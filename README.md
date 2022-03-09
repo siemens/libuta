@@ -392,13 +392,14 @@ rc = uta.get_version(uta_context, &version);
 * The software stack comes packaged in debian. The package `libtss-dev` needs to be installed.
 
 ## TPM-Provisioning
-Before the provisioning step the IBM stack has to be set up as described in
-[Setting up the IBM software stack](#setting-up-the-ibm-software-stack)
+In addition to the `libtss-dev` package, the `tss2` must be installed as well.
 * Copy the 2 key files with 32 Byte keys to `ibmtss1045/utils` and name them
   `key0.bin` and `key1.bin`. (Random keys can be generated using
   `dd if=/dev/random of=key0.bin bs=32 count=1`)
 * The default handle numbers of the key files are hardcoded in the provisioning
   script
+* Set the environment variables the same way libuta has been built. The values
+  are stored in `TPM_INTERFACE_TYPE` `TPM_DATA_DIR` `TPM_SIMULATOR`.
 * Run `sh provisioning.sh`
 * Securely remove the plain key files from the system
 
