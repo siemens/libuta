@@ -397,27 +397,30 @@ rc = uta.get_version(uta_context, &version);
 ## Setting up the IBM software stack
 * The software stack comes packaged in debian. The package `libtss-dev` needs
   to be installed.
+  
 * In order to allow non-root users the access to the TPM, we create a group
   tpm and setup udev rules. The following configuration steps are only for
   reference and should be adjusted during integration:
     * Add group tpm `sudo groupadd tpm`
+  
     * Add tpm group to user `sudo usermod -aG tpm <username>`
+  
     * Create a udev rule file under `/etc/udev/rules.d/80-tpm-2.rules` and add
       the following lines:
-
-```
-KERNEL=="tpm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
-KERNEL=="tpmrm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
-```
-
-    * Create the data directory for the IBM TSS as configured during the
-      libuta build:
-
-```
-sudo mkdir -p /var/lib/tpm_ibm
-chown root:tpm /var/lib/tpm_ibm
-chmod 0770 /var/lib/tpm_ibm
-```
+      
+      ```
+      KERNEL=="tpm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
+      KERNEL=="tpmrm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
+      ```
+  
+  * Create a udev rule file under `/etc/udev/rules.d/80-tpm-2.rules` and add
+    the following lines:
+  
+    ```
+    sudo mkdir -p /var/lib/tpm_ibm
+    chown root:tpm /var/lib/tpm_ibm
+    chmod 0770 /var/lib/tpm_ibm
+    ```
 
 ## TPM-Provisioning
 In addition to the `libtss-dev` package, the `tss2` package must be installed
