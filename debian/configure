@@ -40,3 +40,6 @@ chmod +x "$MYPATH/rules"
 CONFLICTS=$(awk -F, "{ if (\$2 != \"$CONFNAME\") printf \"libuta-%s, \", \$2;}" $MAPFILE| head -c-2)
 # generate appropriate control file using extracted names and conflicts
 sed -e "s/%confname%/$CONFNAME/g" -e "s/%conflicts%/$CONFLICTS/g" "$MYPATH/control.in" > "$MYPATH/control"
+
+#copy substvars to correct location, so that other packages will only depend on "libuta" and not the particular flavor
+cp "$MYPATH/libuta-generic.shlibs" "$MYPATH/libuta-$CONFNAME.shlibs"

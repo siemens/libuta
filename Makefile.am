@@ -10,7 +10,7 @@
 #               
 # SPDX-License-Identifier: Apache-2.0
 
-SUBDIRS = src/lib src/tools/uta_reg_test src/tools/uta_get_passphrase
+SUBDIRS = src/lib src/tools/uta_reg_test src/tools/uta_get_passphrase src/provisioning/tpm_ibm
 
 distclean-local:
 	rm -rf src/mbedtls
