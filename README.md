@@ -102,6 +102,12 @@ If one or more handle numbers are missing, the default values are used.
 ./configure HARDWARE=TPM_IBM KEY0_HANDLE=0x81000000 KEY1_HANDLE=0x81000001 SALT_HANDLE=0x81000002
 ```
 
+Furthermore, there are configuration options for the IBM TSS. The default
+values are the following:
+* TPM_IBM_INTERFACE_TYPE=dev
+* TPM_IBM_DEVICE=/dev/tpmrm0
+* TPM_IBM_DATA_DIR=/var/lib/tpm_ibm
+
 If no TPM resource manager is available on the system, multiprocessing is not
 supported an has to be disabled using `--without-multiprocessing` to pass the
 regression tests.
@@ -389,17 +395,37 @@ rc = uta.get_version(uta_context, &version);
 ```
 
 ## Setting up the IBM software stack
-* The software stack comes packaged in debian. The package `libtss-dev` needs to be installed.
+* The software stack comes packaged in debian. The package `libtss-dev` needs
+  to be installed.
+* In order to allow non-root users the access to the TPM, we create a group
+  tpm and setup udev rules. The following configuration steps are only for
+  reference and should be adjusted during integration:
+    * Add group tpm `sudo groupadd tpm`
+    * Add tpm group to user `sudo usermod -aG tpm <username>`
+    * Create a udev rule file under `/etc/udev/rules.d/80-tpm-2.rules` and add
+      the following lines:
+```
+KERNEL=="tpm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
+KERNEL=="tpmrm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
+```
+    * Create the data directory for the IBM TSS as configured during the
+      libuta build:
+```
+sudo mkdir -p /var/lib/tpm_ibm
+chown root:tpm /var/lib/tpm_ibm
+chmod 0770 /var/lib/tpm_ibm
+```
 
 ## TPM-Provisioning
-In addition to the `libtss-dev` package, the `tss2` must be installed as well.
-* Copy the 2 key files with 32 Byte keys to `ibmtss1045/utils` and name them
+In addition to the `libtss-dev` package, the `tss2` package must be installed
+to provision the device.
+* Copy the 2 key files with 32 Byte keys to the location of the
+  `provisioning.sh` script (`src/provisioning/tpm_ibm/`) and name them
   `key0.bin` and `key1.bin`. (Random keys can be generated using
   `dd if=/dev/random of=key0.bin bs=32 count=1`)
-* The default handle numbers of the key files are hardcoded in the provisioning
-  script
-* Set the environment variables the same way libuta has been built. The values
-  are stored in `TPM_INTERFACE_TYPE` `TPM_DATA_DIR` `TPM_SIMULATOR`.
+* The default handle numbers of the key files and configuration options for
+  the IBM TSS are hardcoded in the provisioning script and must match the
+  configuration of the libuta
 * Run `sh provisioning.sh`
 * Securely remove the plain key files from the system
 
