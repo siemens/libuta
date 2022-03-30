@@ -408,13 +408,13 @@ rc = uta.get_version(uta_context, &version);
       KERNEL=="tpm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
       KERNEL=="tpmrm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
       ```
-  * Create a udev rule file under `/etc/udev/rules.d/80-tpm-2.rules` and add
-    the following lines:
-    ```
-    sudo mkdir -p /var/lib/tpm_ibm
-    chown root:tpm /var/lib/tpm_ibm
-    chmod 0770 /var/lib/tpm_ibm
-    ```
+    * Create the data directory for the IBM TSS as configured during the
+      libuta build:
+      ```
+      sudo mkdir -p /var/lib/tpm_ibm
+      chown root:tpm /var/lib/tpm_ibm
+      chmod 0770 /var/lib/tpm_ibm
+      ```
 
 ## TPM-Provisioning
 In addition to the `libtss-dev` package, the `tss2` package must be installed
