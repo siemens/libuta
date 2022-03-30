@@ -38,8 +38,15 @@ chmod +x "$MYPATH/rules"
 
 # create "Conflicts" line using all other known configure names
 CONFLICTS=$(awk -F, "{ if (\$2 != \"$CONFNAME\") printf \"libuta-%s, \", \$2;}" $MAPFILE| head -c-2)
-# generate appropriate control file using extracted names and conflicts
-sed -e "s/%confname%/$CONFNAME/g" -e "s/%conflicts%/$CONFLICTS/g" "$MYPATH/control.in" > "$MYPATH/control"
+# generate appropriate control file using extracted names, dependencies and conflicts
+if [ "$CONFNAME" == "tpmibm" ]; then
+  HW_SPECIFIC_BUILD_DEPENDS=", libtss-dev"
+  HW_SPECIFIC_PACKAGE_DEPENDS=", libtss0"
+else
+  HW_SPECIFIC_BUILD_DEPENDS=""
+  HW_SPECIFIC_PACKAGE_DEPENDS=""
+fi
+sed -e "s/%confname%/$CONFNAME/g" -e "s/%hw-specific-build-depends%/$HW_SPECIFIC_BUILD_DEPENDS/g" -e "s/%hw-specific-package-depends%/$HW_SPECIFIC_PACKAGE_DEPENDS/g" -e "s/%conflicts%/$CONFLICTS/g" "$MYPATH/control.in" > "$MYPATH/control"
 
 #copy substvars to correct location, so that other packages will only depend on "libuta" and not the particular flavor
 cp "$MYPATH/libuta-generic.shlibs" "$MYPATH/libuta-$CONFNAME.shlibs"
