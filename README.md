@@ -404,12 +404,15 @@ rc = uta.get_version(uta_context, &version);
     * Add tpm group to user `sudo usermod -aG tpm <username>`
     * Create a udev rule file under `/etc/udev/rules.d/80-tpm-2.rules` and add
       the following lines:
+
 ```
 KERNEL=="tpm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
 KERNEL=="tpmrm[0-9]*", MODE="0660", OWNER="root", GROUP="tpm"
 ```
+
     * Create the data directory for the IBM TSS as configured during the
       libuta build:
+
 ```
 sudo mkdir -p /var/lib/tpm_ibm
 chown root:tpm /var/lib/tpm_ibm
