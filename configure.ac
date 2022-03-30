@@ -56,9 +56,9 @@ AC_ARG_VAR([HARDWARE], [Define the desired hardware: TPM_IBM, UTA_SIM])
 AC_ARG_VAR([TPM_IBM_KEY0_HANDLE], [Only for TPM_IBM: Define the key handle for key slot 0 (default 0x81000000)])
 AC_ARG_VAR([TPM_IBM_KEY1_HANDLE], [Only for TPM_IBM: Define the key handle for key slot 1 (default 0x81000001)])
 AC_ARG_VAR([TPM_IBM_SALT_HANDLE], [Only for TPM_IBM: Define the key handle for the salt key (default 0x81000002)])
-AC_ARG_VAR([TPM_IBM_INTERFACE_TYPE], [Only for TPM_IBM: Override interface type used for IBM TSS API (TSS library default if not set, possibly "sim")])
-AC_ARG_VAR([TPM_IBM_DATA_DIR], [Only for TPM_IBM: Override directory to store dynamic data used for IBM TSS API (TSS library default if not set, possibly .)])
-AC_ARG_VAR([TPM_IBM_DEVICE], [Only for TPM_IBM: Override tpm device path used for IBM TSS API (TSS library default if not set, possibly /dev/tpm0)])
+AC_ARG_VAR([TPM_IBM_INTERFACE_TYPE], [Only for TPM_IBM: Select interface type for IBM TSS API (default "dev")])
+AC_ARG_VAR([TPM_IBM_DATA_DIR], [Only for TPM_IBM: Select data directory for IBM TSS API (default "/var/lib/tpm_ibm")])
+AC_ARG_VAR([TPM_IBM_DEVICE], [Only for TPM_IBM: Select TPM device file used for IBM TSS API (default "/dev/tpmrm0")])
 
 # Define the environment flag to enable the build and installation of the tools
 TOOLS=0
@@ -74,10 +74,10 @@ AS_IF([test "x$multiprocessing" = "xyes"], [
    AC_DEFINE([MULTIPROCESSING],[1],[Enable multiprocessing in the regression tests (default)])
 ])
 
-# IBM TPM TSS library presets
-AS_IF([test "x$TPM_IBM_INTERFACE_TYPE" != "x"],AC_DEFINE_UNQUOTED([CONFIGURED_TPM_INTERFACE_TYPE],["$TPM_IBM_INTERFACE_TYPE"],[Interface type for IBM TSS]))
-AS_IF([test "x$TPM_IBM_DATA_DIR" != "x"],AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DATA_DIR],["$TPM_IBM_DATA_DIR"],[data dir for variable data storage of IBM TSS]))
-AS_IF([test "x$TPM_IBM_DEVICE" != "x"],AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DEVICE],["$TPM_IBM_DEVICE"],[Interface used for TPM access by IBM TSS]))
+# IBM TSS library presets
+AS_IF([test "x$TPM_IBM_INTERFACE_TYPE" = "x"],AC_DEFINE_UNQUOTED([CONFIGURED_TPM_INTERFACE_TYPE],["dev"],[Interface type for IBM TSS]),AC_DEFINE_UNQUOTED([CONFIGURED_TPM_INTERFACE_TYPE],["$TPM_IBM_INTERFACE_TYPE"],[Interface type for IBM TSS]))
+AS_IF([test "x$TPM_IBM_DATA_DIR" = "x"],AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DATA_DIR],["/var/lib/tpm_ibm"],[IBM TSS data directory]),AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DATA_DIR],["$TPM_IBM_DATA_DIR"],[IBM TSS data directory]))
+AS_IF([test "x$TPM_IBM_DEVICE" = "x"],AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DEVICE],["/dev/tpmrm0"],[TPM device file used by IBM TSS]),AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DEVICE],["$TPM_IBM_DEVICE"],[TPM device file used by IBM TSS]))
 
 # Read out key handle inputs
 AS_IF([test "x$TPM_IBM_KEY0_HANDLE" = "x"],AC_DEFINE([TPM_IBM_KEY0_HANDLE],[0x81000000],[Handle number of the key in key slot 0]),AC_DEFINE_UNQUOTED([TPM_IBM_KEY0_HANDLE],[$TPM_IBM_KEY0_HANDLE],[Handle number of the key in key slot 0]))

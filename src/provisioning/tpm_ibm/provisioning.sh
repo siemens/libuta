@@ -21,6 +21,12 @@ readonly HMAC_KEY0=81000000
 readonly HMAC_KEY1=81000001
 readonly ECC=81000002
 
+# Configure IBM TSS (interface type and data dir must match
+# the configuration of libuta).
+export TPM_DEVICE="/dev/tpm0"
+export TPM_DATA_DIR="/var/lib/tpm_ibm"
+export TPM_INTERFACE_TYPE="dev"
+
 # MS TPM Simulator
 readonly TPM_SIMULATOR=0
 
@@ -43,7 +49,6 @@ fi
 
 # Define a key for the session state encryption
 export TPM_SESSION_ENCKEY=`tssgetrandom -by 16 -ns`
-export TPM_DEVICE="/dev/tpm0"
 
 # Try to clear the needed key slots
 echo ""
