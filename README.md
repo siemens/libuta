@@ -395,8 +395,9 @@ rc = uta.get_version(uta_context, &version);
 ```
 
 ## Setting up the IBM software stack
-* The software stack comes packaged in debian. The package `libtss-dev` needs
-  to be installed.  
+* The software stack comes packaged in debian. The package `libtss0` needs
+  to be installed. When building libuta from source, the package `libtss-dev`
+  is needed as well  
 * In order to allow non-root users the access to the TPM, we create a group
   tpm and setup udev rules. The following configuration steps are only for
   reference and should be adjusted during integration:
