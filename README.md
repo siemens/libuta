@@ -419,16 +419,21 @@ rc = uta.get_version(uta_context, &version);
 
 ## TPM-Provisioning
 In addition to the `libtss-dev` package, the `tss2` package must be installed
-to provision the device.
-* Copy the 2 key files with 32 Byte keys to the location of the
-  `provisioning.sh` script (`src/provisioning/tpm_ibm/`) and name them
-  `key0.bin` and `key1.bin`. (Random keys can be generated using
-  `dd if=/dev/random of=key0.bin bs=32 count=1`)
-* The default handle numbers of the key files and configuration options for
-  the IBM TSS are hardcoded in the provisioning script and must match the
-  configuration of the libuta
-* Run `sh provisioning.sh`
-* Securely remove the plain key files from the system
+to provision the device. The keys to be provisioned can either be generated
+randomly on the TPM itself or provided by the user. The default handle numbers
+of the keys and the configuration options for the IBM TSS are hardcoded in the
+provisioning script and must match the configuration of the libuta.
+```
+Usage:
+TPM provisioning with random keys for slot0 and slot1:
+./provisioning.sh
+
+TPM provisioning with external key for slot0 and random key for slot1
+./provisioning.sh <key0_file.bin>
+
+TPM provisioning with external keys for slot0 and slot1
+./provisioning.sh <key0_file.bin> <key1_file.bin>
+```
 
 ## Thread safety
 The hardware trust anchor are shared resources and therefore, the access must
