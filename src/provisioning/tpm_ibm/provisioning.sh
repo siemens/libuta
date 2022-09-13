@@ -22,14 +22,20 @@ readonly HMAC_KEY0=81000000
 readonly HMAC_KEY1=81000001
 readonly ECC=81000002
 
+# Use environment variable or set default value
+TPM_SIMULATOR=${TPM_SIMULATOR:-0}
+echo $TPM_SIMULATOR
+
 # Configure IBM TSS (interface type and data dir must match
 # the configuration of libuta).
-export TPM_DEVICE="/dev/tpm0"
-export TPM_DATA_DIR="/var/lib/tpm_ibm"
-export TPM_INTERFACE_TYPE="dev"
-
-# MS TPM Simulator
-readonly TPM_SIMULATOR=0
+if [ $TPM_SIMULATOR -eq 0 ]; then
+  export TPM_DEVICE="/dev/tpm0"
+  export TPM_DATA_DIR="/var/lib/tpm_ibm"
+  export TPM_INTERFACE_TYPE="dev"
+else
+  export TPM_DATA_DIR="/var/lib/tpm_ibm"
+  export TPM_INTERFACE_TYPE="mssim"
+fi
 
 # Function to print out error message and exit
 by_error_print() {
