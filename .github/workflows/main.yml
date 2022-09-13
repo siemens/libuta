@@ -13,7 +13,7 @@ name: CI
 
 on:
   push:
-    branches: [ "master", "staging" ]
+#    branches: [ "master", "staging" ]
   pull_request:
     branches: [ "master", "staging" ]
   workflow_dispatch:
