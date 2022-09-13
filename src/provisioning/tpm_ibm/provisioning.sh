@@ -24,7 +24,6 @@ readonly ECC=81000002
 
 # Use environment variable or set default value
 TPM_SIMULATOR=${TPM_SIMULATOR:-0}
-echo $TPM_SIMULATOR
 
 # Configure IBM TSS (interface type and data dir must match
 # the configuration of libuta).
