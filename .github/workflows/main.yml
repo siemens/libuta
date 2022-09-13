@@ -27,10 +27,10 @@ jobs:
           ./bootstrap
           ./configure HARDWARE=UTA_SIM --enable-tools
           make
+          sudo make install
       - name: Test
         run: |
-          export LD_LIBRARY_PATH="$(pwd)/src/lib/.libs/"
-          ./src/tools/uta_reg_test/.libs/uta_reg_test  
+          uta_reg_test  
 
   test_tpm_ibm:
     runs-on: ubuntu-latest
@@ -66,7 +66,7 @@ jobs:
           sudo make install
       - name: Test [random keys]
         run: |
-          ./uta_reg_test  
+          uta_reg_test  
       - name: TPM Provisioning with user provided keys
         run: |
           dd if=/dev/random of=key0.bin bs=32 count=1
@@ -75,4 +75,4 @@ jobs:
           ./src/provisioning/tpm_ibm/provisioning.sh key0.bin key1.bin
       - name: Test [user provided keys]
         run: |
-          ./uta_reg_test key0.bin key1.bin
+          uta_reg_test key0.bin key1.bin
