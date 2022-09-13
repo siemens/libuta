@@ -382,30 +382,3 @@ echo ""
 echo "# Removing temporary files..."
 rm -f ecc_priv_key.bin ecc_pub_key.bin storage_key_priv.bin storage_key_pub.bin
 rm -f hmac_key_priv.bin hmac_key_pub.bin
-
-
-if [ $NUMBER_OF_ARGUMENTS -eq 1 ]
-then
-  echo ""
-  echo "# Remove $1 from file system? (Y/n)"
-  read answer
-
-  if echo "$answer" | grep -iq "^n" ;then
-	echo "# ATTENTION: $1 not removed!"
-  else
-	echo "# Removing $1..."
-    rm -f $1
-  fi
-elif [ $NUMBER_OF_ARGUMENTS -eq 2 ]
-then
-  echo ""
-  echo "# Remove $1 and $2 from file system? (Y/n)"
-  read answer
-
-  if echo "$answer" | grep -iq "^n" ;then
-	echo "# ATTENTION: $1 and $2 not removed!"
-  else
-	echo "# Removing $1 and $2..."
-    rm -f $1 $2
-  fi
-fi
