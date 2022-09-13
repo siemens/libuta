@@ -1,0 +1,33 @@
+#
+# Copyright (c) Siemens Mobility GmBH, 2022
+#
+# Author: Thomas Zeschg <thomas.zeschg@siemens.com>
+#
+# This work is licensed under the terms of the Apache Software License 
+# 2.0. See the COPYING file in the top-level directory.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+name: CI
+
+on:
+  push:
+    branches: [ "master", "staging" ]
+  pull_request:
+    branches: [ "master", "staging" ]
+  workflow_dispatch:
+
+jobs:
+  test_uta_sim:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+          ./bootstrap
+          ./configure HARDWARE=UTA_SIM --enable-tools
+          make
+          export LD_LIBRARY_PATH="$(pwd)/src/lib/.libs/"
+          ./src/tools/uta_reg_test/.libs/uta_reg_test  
