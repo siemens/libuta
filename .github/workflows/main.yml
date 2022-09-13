@@ -35,10 +35,10 @@ jobs:
   test_tpm_ibm:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Install TPM Simulator
         run: |
-          pwd
-          ls
           wget https://jaist.dl.sourceforge.net/project/ibmswtpm2/ibmtpm1682.tar.gz
           mkdir tpm_simulator
           cd tpm_simulator
@@ -51,12 +51,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libtss0 libtss-dev tss2
           sudo mkdir -p /var/lib/tpm_ibm
-      - name: Checkout
-        uses: actions/checkout@v3
       - name: TPM Provisioning with random keys
         run: |
-          pwd
-          ls
           ./tpm_simulator/src/tpm_server &
           export TPM_SIMULATOR=1
           ./src/provisioning/tpm_ibm/provisioning.sh
