@@ -43,10 +43,11 @@ jobs:
           tar -xf ../ibmtpm1682.tar.gz
           cd src
           make
+          ./tpm_server &
       - name: Install IBM TSS
         run: |
           sudo apt-get update
-          sudo apt-get install -y libtss0 libtss-dev
+          sudo apt-get install -y libtss0 libtss-dev tss2
           sudo mkdir -p /var/lib/tpm_ibm
       - name: Checkout
         uses: actions/checkout@v3
