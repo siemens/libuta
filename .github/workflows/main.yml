@@ -43,3 +43,15 @@ jobs:
           tar -xf ../ibmtpm1682.tar.gz
           cd src
           make
+      - name: Install IBM TSS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libtss0 libtss-dev
+          sudo mkdir -p /var/lib/tpm_ibm
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: TPM Provisioning with random keys
+          ./src/provisioning/tpm_ibm/provisioning.sh
+      - name: Build
+        run: |
+          ./bootstrap
