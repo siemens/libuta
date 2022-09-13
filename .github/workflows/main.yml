@@ -51,6 +51,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: TPM Provisioning with random keys
+        run: |
           ./src/provisioning/tpm_ibm/provisioning.sh
       - name: Build
         run: |
