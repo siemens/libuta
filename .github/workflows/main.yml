@@ -31,3 +31,14 @@ jobs:
         run: |
           export LD_LIBRARY_PATH="$(pwd)/src/lib/.libs/"
           ./src/tools/uta_reg_test/.libs/uta_reg_test  
+  test_uta_sim:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install TPM Simulator
+        run: |
+          wget https://jaist.dl.sourceforge.net/project/ibmswtpm2/ibmtpm1682.tar.gz
+          mkdir tpm_simulator
+          cd tpm_simulator
+          tar -xf ../ibmtpm1682.tar.gz
+          cd src
+          make
