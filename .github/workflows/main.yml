@@ -31,6 +31,7 @@ jobs:
         run: |
           export LD_LIBRARY_PATH="$(pwd)/src/lib/.libs/"
           ./src/tools/uta_reg_test/.libs/uta_reg_test  
+
   test_uta_sim:
     runs-on: ubuntu-latest
     steps:
