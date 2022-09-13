@@ -51,6 +51,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libtss0 libtss-dev tss2
           sudo mkdir -p /var/lib/tpm_ibm
+          sudo chown root:docker /var/lib/tpm_ibm
+          sudo chmod 0770 /var/lib/tpm_ibm
           ls -la
       - name: TPM Provisioning with random keys
         run: |
