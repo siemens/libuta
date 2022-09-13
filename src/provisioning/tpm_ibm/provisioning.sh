@@ -22,14 +22,19 @@ readonly HMAC_KEY0=81000000
 readonly HMAC_KEY1=81000001
 readonly ECC=81000002
 
+# Use environment variable or set default value
+TPM_SIMULATOR=${TPM_SIMULATOR:-0}
+
 # Configure IBM TSS (interface type and data dir must match
 # the configuration of libuta).
-export TPM_DEVICE="/dev/tpm0"
-export TPM_DATA_DIR="/var/lib/tpm_ibm"
-export TPM_INTERFACE_TYPE="dev"
-
-# MS TPM Simulator
-readonly TPM_SIMULATOR=0
+if [ $TPM_SIMULATOR -eq 0 ]; then
+  export TPM_DEVICE="/dev/tpm0"
+  export TPM_DATA_DIR="/var/lib/tpm_ibm"
+  export TPM_INTERFACE_TYPE="dev"
+else
+  export TPM_DATA_DIR="/var/lib/tpm_ibm"
+  export TPM_INTERFACE_TYPE="socsim"
+fi
 
 # Function to print out error message and exit
 by_error_print() {
@@ -377,30 +382,3 @@ echo ""
 echo "# Removing temporary files..."
 rm -f ecc_priv_key.bin ecc_pub_key.bin storage_key_priv.bin storage_key_pub.bin
 rm -f hmac_key_priv.bin hmac_key_pub.bin
-
-
-if [ $NUMBER_OF_ARGUMENTS -eq 1 ]
-then
-  echo ""
-  echo "# Remove $1 from file system? (Y/n)"
-  read answer
-
-  if echo "$answer" | grep -iq "^n" ;then
-	echo "# ATTENTION: $1 not removed!"
-  else
-	echo "# Removing $1..."
-    rm -f $1
-  fi
-elif [ $NUMBER_OF_ARGUMENTS -eq 2 ]
-then
-  echo ""
-  echo "# Remove $1 and $2 from file system? (Y/n)"
-  read answer
-
-  if echo "$answer" | grep -iq "^n" ;then
-	echo "# ATTENTION: $1 and $2 not removed!"
-  else
-	echo "# Removing $1 and $2..."
-    rm -f $1 $2
-  fi
-fi
