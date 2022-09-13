@@ -34,7 +34,7 @@ if [ $TPM_SIMULATOR -eq 0 ]; then
   export TPM_INTERFACE_TYPE="dev"
 else
   export TPM_DATA_DIR="/var/lib/tpm_ibm"
-  export TPM_INTERFACE_TYPE="mssim"
+  export TPM_INTERFACE_TYPE="socsim"
 fi
 
 # Function to print out error message and exit
