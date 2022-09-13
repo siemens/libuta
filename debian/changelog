@@ -1,3 +1,9 @@
+libuta (1.1.1-0) stable; urgency=medium
+
+  * Improve TPM provisioning script
+
+ -- Thomas Zeschg <thomas.zeschg@siemens.com>  Tue, 13 Sep 2022 19:51:55 +0200
+
 libuta (1.1.0-0) stable; urgency=medium
 
   * Allow installation of IBM TSS using debian package and add additional configuration options to libuta
