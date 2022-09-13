@@ -28,6 +28,7 @@ jobs:
           ./configure HARDWARE=UTA_SIM --enable-tools
           make
           sudo make install
+          sudo ldconfig
       - name: Test
         run: |
           uta_reg_test  
@@ -64,6 +65,7 @@ jobs:
           ./configure HARDWARE=TPM_IBM TPM_IBM_INTERFACE_TYPE=socsim --enable-tools
           make
           sudo make install
+          sudo ldconfig
       - name: Test [random keys]
         run: |
           uta_reg_test  
