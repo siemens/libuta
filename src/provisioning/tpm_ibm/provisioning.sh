@@ -15,7 +15,7 @@
 
 # DEFINES
 # Hierarchy endorsment e, platform p, owner o, null n
-readonly HIERARCHY=p
+readonly HIERARCHY=o
 
 # Key slots
 readonly HMAC_KEY0=81000000
