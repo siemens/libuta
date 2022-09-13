@@ -1,6 +1,6 @@
 Source: libuta
 Priority: optional
-Maintainer: Thomas Zeschg <hermann.seuschek@siemens.com>
+Maintainer: Thomas Zeschg <thomas.zeschg@siemens.com>
 Standards-Version: 4.0.0
 Build-Depends: pkg-config, dh-autoreconf, m4, git %hw-specific-build-depends%
 Section: libs
