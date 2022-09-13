@@ -1,0 +1,80 @@
+#
+# Copyright (c) Siemens Mobility GmbH, 2022
+#
+# Author: Thomas Zeschg <thomas.zeschg@siemens.com>
+#
+# This work is licensed under the terms of the Apache Software License 
+# 2.0. See the COPYING file in the top-level directory.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test_uta_sim:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+          ./bootstrap
+          ./configure HARDWARE=UTA_SIM --enable-tools
+          make
+          sudo make install
+          sudo ldconfig
+      - name: Test
+        run: |
+          uta_reg_test  
+
+  test_tpm_ibm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install TPM Simulator
+        run: |
+          wget https://jaist.dl.sourceforge.net/project/ibmswtpm2/ibmtpm1682.tar.gz
+          mkdir tpm_simulator
+          cd tpm_simulator
+          tar -xf ../ibmtpm1682.tar.gz
+          cd src
+          make
+          ./tpm_server &
+      - name: Install IBM TSS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libtss0 libtss-dev tss2
+          sudo mkdir -p /var/lib/tpm_ibm
+          sudo chown root:docker /var/lib/tpm_ibm
+          sudo chmod 0770 /var/lib/tpm_ibm
+          ls -la
+      - name: TPM Provisioning with random keys
+        run: |
+          export TPM_SIMULATOR=1
+          ./src/provisioning/tpm_ibm/provisioning.sh
+      - name: Build
+        run: |
+          ./bootstrap
+          ./configure HARDWARE=TPM_IBM TPM_IBM_INTERFACE_TYPE=socsim --enable-tools
+          make
+          sudo make install
+          sudo ldconfig
+      - name: Test [random keys]
+        run: |
+          uta_reg_test  
+      - name: TPM Provisioning with user provided keys
+        run: |
+          dd if=/dev/random of=key0.bin bs=32 count=1
+          dd if=/dev/random of=key1.bin bs=32 count=1
+          export TPM_SIMULATOR=1
+          ./src/provisioning/tpm_ibm/provisioning.sh key0.bin key1.bin
+      - name: Test [user provided keys]
+        run: |
+          uta_reg_test key0.bin key1.bin
