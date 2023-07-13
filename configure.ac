@@ -103,6 +103,7 @@ AS_IF([test "x$HARDWARE" = "xUTA_SIM" || test "x$enable_tools" = "xyes" ],AS_IF(
 # Checks for libraries.
 AS_IF([test "x$HARDWARE" = "xTPM_IBM"],AC_SEARCH_LIBS([TSS_Create], [tss], [], [AC_MSG_ERROR([unable to find the IBM software stack])]))
 AS_IF([test "x$HARDWARE" = "xTPM_TCG"],AC_SEARCH_LIBS([Esys_Create], [tss2-esys], [], [AC_MSG_ERROR([unable to find the TSS libraries])]))
+AS_IF([test "x$HARDWARE" = "xTPM_TCG"],AC_SEARCH_LIBS([Tss2_Tcti_Device_Init], [tss2-tcti-device], [], [AC_MSG_ERROR([unable to find the TSS libraries])]))
 AC_SEARCH_LIBS([pthread_create], [pthread], [], [AC_MSG_ERROR([unable to find the pthread library])])
 
 # Checks for header files.
