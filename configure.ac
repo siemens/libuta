@@ -52,13 +52,13 @@ AC_PROG_CC_C99
 # AC_FUNC_MALLOC
 
 # Define the environment variables
-AC_ARG_VAR([HARDWARE], [Define the desired hardware: TPM_IBM, UTA_SIM])
-AC_ARG_VAR([TPM_IBM_KEY0_HANDLE], [Only for TPM_IBM: Define the key handle for key slot 0 (default 0x81000000)])
-AC_ARG_VAR([TPM_IBM_KEY1_HANDLE], [Only for TPM_IBM: Define the key handle for key slot 1 (default 0x81000001)])
-AC_ARG_VAR([TPM_IBM_SALT_HANDLE], [Only for TPM_IBM: Define the key handle for the salt key (default 0x81000002)])
+AC_ARG_VAR([HARDWARE], [Define the desired hardware: TPM_TCG, TPM_IBM, UTA_SIM])
+AC_ARG_VAR([TPM_KEY0_HANDLE], [Only for TPM_IBM and TPM_TCG: Define the key handle for key slot 0 (default 0x81000000)])
+AC_ARG_VAR([TPM_KEY1_HANDLE], [Only for TPM_IBM and TPM_TCG: Define the key handle for key slot 1 (default 0x81000001)])
+AC_ARG_VAR([TPM_SALT_HANDLE], [Only for TPM_IBM and TPM_TCG: Define the key handle for the salt key (default 0x81000002)])
 AC_ARG_VAR([TPM_IBM_INTERFACE_TYPE], [Only for TPM_IBM: Select interface type for IBM TSS API (default "dev")])
-AC_ARG_VAR([TPM_IBM_DATA_DIR], [Only for TPM_IBM: Select data directory for IBM TSS API (default "/var/lib/tpm_ibm")])
 AC_ARG_VAR([TPM_IBM_DEVICE], [Only for TPM_IBM: Select TPM device file used for IBM TSS API (default "/dev/tpmrm0")])
+AC_ARG_VAR([TPM_IBM_DATA_DIR], [Only for TPM_IBM: Select data directory for IBM TSS API (default "/var/lib/tpm_ibm")])
 
 # Define the environment flag to enable the build and installation of the tools
 TOOLS=0
@@ -80,9 +80,9 @@ AS_IF([test "x$TPM_IBM_DATA_DIR" = "x"],AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DATA_
 AS_IF([test "x$TPM_IBM_DEVICE" = "x"],AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DEVICE],["/dev/tpmrm0"],[TPM device file used by IBM TSS]),AC_DEFINE_UNQUOTED([CONFIGURED_TPM_DEVICE],["$TPM_IBM_DEVICE"],[TPM device file used by IBM TSS]))
 
 # Read out key handle inputs
-AS_IF([test "x$TPM_IBM_KEY0_HANDLE" = "x"],AC_DEFINE([TPM_IBM_KEY0_HANDLE],[0x81000000],[Handle number of the key in key slot 0]),AC_DEFINE_UNQUOTED([TPM_IBM_KEY0_HANDLE],[$TPM_IBM_KEY0_HANDLE],[Handle number of the key in key slot 0]))
-AS_IF([test "x$TPM_IBM_KEY1_HANDLE" = "x"],AC_DEFINE([TPM_IBM_KEY1_HANDLE],[0x81000001],[Handle number of the key in key slot 1]),AC_DEFINE_UNQUOTED([TPM_IBM_KEY1_HANDLE],[$TPM_IBM_KEY1_HANDLE],[Handle number of the key in key slot 1]))
-AS_IF([test "x$TPM_IBM_SALT_HANDLE" = "x"],AC_DEFINE([TPM_IBM_SALT_HANDLE],[0x81000002],[Handle number of the salt key]),AC_DEFINE_UNQUOTED([TPM_IBM_SALT_HANDLE],[$TPM_IBM_SALT_HANDLE],[Handle number of the salt key]))
+AS_IF([test "x$TPM_KEY0_HANDLE" = "x"],AC_DEFINE([TPM_KEY0_HANDLE],[0x81000000],[Handle number of the key in key slot 0]),AC_DEFINE_UNQUOTED([TPM_KEY0_HANDLE],[$TPM_KEY0_HANDLE],[Handle number of the key in key slot 0]))
+AS_IF([test "x$TPM_KEY1_HANDLE" = "x"],AC_DEFINE([TPM_KEY1_HANDLE],[0x81000001],[Handle number of the key in key slot 1]),AC_DEFINE_UNQUOTED([TPM_KEY1_HANDLE],[$TPM_KEY1_HANDLE],[Handle number of the key in key slot 1]))
+AS_IF([test "x$TPM_SALT_HANDLE" = "x"],AC_DEFINE([TPM_SALT_HANDLE],[0x81000002],[Handle number of the salt key]),AC_DEFINE_UNQUOTED([TPM_SALT_HANDLE],[$TPM_SALT_HANDLE],[Handle number of the salt key]))
 
 # Read out HARDWARE and make an input validation
 AS_IF([test "x$HARDWARE" = "xTPM_IBM"],AC_DEFINE([HW_BACKEND_TPM_IBM],[1],[Use the TPM IBM API]),

@@ -2,7 +2,7 @@
 * 
 * @brief Unified Trust Anchor (UTA) TPM based on the IBM TSS
 *
-* @copyright Copyright (c) Siemens Mobility GmbH, 2020
+* @copyright Copyright (c) Siemens Mobility GmbH, 2023
 *
 * @author Christian P. Feist <christian.feist@siemens.com>
 * @author Thomas Zeschg <thomas.zeschg@siemens.com>
@@ -318,11 +318,11 @@ uta_rc tpm_derive_key(const uta_context_v1_t *tpm_context, uint8_t *key,
     switch(key_slot)
     {
         case 0x00:
-            hmacKeyHandle = TPM_IBM_KEY0_HANDLE;
+            hmacKeyHandle = TPM_KEY0_HANDLE;
         break;
             
         case 0x01:
-            hmacKeyHandle = TPM_IBM_KEY1_HANDLE;
+            hmacKeyHandle = TPM_KEY1_HANDLE;
         break;
             
         default:
@@ -524,7 +524,7 @@ static uint32_t tpm_start_hmac_session(const uta_context_v1_t *tpm_context)
     StartAuthSession_In in;
     StartAuthSession_Out out;
     StartAuthSession_Extra extra;
-    TPMI_DH_OBJECT tpmKey = TPM_IBM_SALT_HANDLE;
+    TPMI_DH_OBJECT tpmKey = TPM_SALT_HANDLE;
     TPMI_DH_ENTITY bindHandle = TPM_RH_NULL;
     const char *bindPassword = NULL;
     TPMI_ALG_HASH halg = TPM_ALG_SHA256;
