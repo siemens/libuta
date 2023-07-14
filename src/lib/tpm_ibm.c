@@ -699,11 +699,8 @@ static uint32_t tpm_get_rand(const uta_context_v1_t *tpm_context,
             for (br = 0 ; (br < out.randomBytes.t.size) &&
                     (bytesCopied < bytesRequested) ; br++)
             {
-                if (out.randomBytes.t.buffer[br] != 0)
-                {
-                    randomValue[bytesCopied] = out.randomBytes.t.buffer[br];
-                    bytesCopied++;
-                }
+                randomValue[bytesCopied] = out.randomBytes.t.buffer[br];
+                bytesCopied++;
             }
         }
     }
