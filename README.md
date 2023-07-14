@@ -40,11 +40,13 @@ simulator with a uniform interface.
             * [get_device_uuid](#get_device_uuid)
             * [self_test](#self_test)
             * [get_version](#get_version)
+      * [Setting up the TCG software stack](#setting-up-the-tcg-software-stack)
       * [Setting up the IBM software stack](#setting-up-the-ibm-software-stack)
       * [TPM-Provisioning](#tpm-provisioning)
+      * [Migration from TPM_IBM to TPM_TCG](#migration-from-tpm_ibm-to-tpm_tcg)
       * [Thread safety](#thread-safety)
       * [UTA Key Hierarchy](#uta-key-hierarchy)
-         * [TPM IBM](#tpm-ibm)
+         * [TPM TCG and TPM IBM](#tpm-tcg-and-tpm-ibm)
       * [Coding Standard](#coding-standard)
       * [Versioning](#versioning)
 
@@ -90,7 +92,7 @@ to the configuration arguments.
 ./configure HARDWARE=XXX --enable-tools
 ```
 
-The configuration of the TPM_IBM variant needs some handle numbers, which are 
+The configuration of the TPM_TCG and TPM_IBM variants need some handle numbers, which are 
 defined during the provisioning of the TPM (see
 [TPM-Provisioning](#tpm-provisioning)). The default handle numbers are:
 * KEY0_HANDLE=0x81000000
@@ -102,10 +104,13 @@ If one or more handle numbers are missing, the default values are used.
 ./configure HARDWARE=TPM_IBM KEY0_HANDLE=0x81000000 KEY1_HANDLE=0x81000001 SALT_HANDLE=0x81000002
 ```
 
-Furthermore, there are configuration options for the IBM TSS. The default
+Furthermore, the TPM device file can be specified for the TPM TCG and TPM
+IBM backends. The default is the following:
+* TPM_DEVICE_FILE=/dev/tpmrm0
+
+There are additional configuration options for the IBM TSS. The default
 values are the following:
 * TPM_IBM_INTERFACE_TYPE=dev
-* TPM_IBM_DEVICE=/dev/tpmrm0
 * TPM_IBM_DATA_DIR=/var/lib/tpm_ibm
 
 If no TPM resource manager is available on the system, multiprocessing is not
@@ -394,10 +399,22 @@ uta_version_t version;
 rc = uta.get_version(uta_context, &version);
 ```
 
+## Setting up the TCG software stack
+* The TCG software stack (tpm2-tss) is currently only available as source code
+package in debian. Alternatively, it can be found [here](https://github.com/tpm2-software/tpm2-tss).
+* To automatically setup the necessary udev rules, it is recommended to
+  use the option `--with-udevrulesdir` during configure, e.g.:
+  ```
+  ./bootstrap
+  ./configure --with-udevrulesdir=/etc/udev/rules.d
+  make
+  sudo make install
+  ```
+
 ## Setting up the IBM software stack
 * The software stack comes packaged in debian. The package `libtss0` needs
   to be installed. When building libuta from source, the package `libtss-dev`
-  is needed as well  
+  is needed as well
 * In order to allow non-root users the access to the TPM, we create a group
   tpm and setup udev rules. The following configuration steps are only for
   reference and should be adjusted during integration:
@@ -418,11 +435,15 @@ rc = uta.get_version(uta_context, &version);
       ```
 
 ## TPM-Provisioning
-In addition to the `libtss-dev` package, the `tss2` package must be installed
-to provision the device. The keys to be provisioned can either be generated
+The provisioning for the TPM_TCG and TPM_IBM backend works in a similar way.
+The TPM_TCG provisioning additionally depends on the package `tpm2-tools`
+while the TPM_IBM backend requires the `tss2` package. The provisioning
+scripts can be found in src/provisioning/tpm_tcg and src/provisionig/tpm_ibm
+respectively. The keys to be provisioned can either be generated
 randomly on the TPM itself or provided by the user. The default handle numbers
-of the keys and the configuration options for the IBM TSS are hardcoded in the
-provisioning script and must match the configuration of the libuta.
+of the keys (for TPM_TCG and TPM_IBM) and further configuration options (for
+the IBM TSS only) are hardcoded in the provisioning scripts and must match the
+configuration of the libuta.
 ```
 Usage:
 TPM provisioning with random keys for slot0 and slot1:
@@ -434,6 +455,15 @@ TPM provisioning with external key for slot0 and random key for slot1
 TPM provisioning with external keys for slot0 and slot1
 ./provisioning.sh <key0_file.bin> <key1_file.bin>
 ```
+
+## Migration from TPM_IBM to TPM_TCG
+It is possible to switch from the TPM_IBM backend to the TPM_TCG backend
+without additional migration steps. If the TPM_IBM provisioning script
+has been used, the TPM works as well with the TPM_TCG backend as long as
+the handle numbers are configured the same way in the libuta configuration.
+
+The migration from the TPM_TCG backend to the TPM_IBM backend is currently
+not supported.
 
 ## Thread safety
 The hardware trust anchor are shared resources and therefore, the access must
@@ -450,7 +480,7 @@ the regression tests.
 Due to different trust anchor architectures, the key hierarchy differs in the
 implementation. For the end user it does not make a difference.
 
-### TPM IBM
+### TPM TCG and TPM IBM
 The TPM uses the storage hierarchy to store the keys of slot 0 and slot 1. They
 are inserted during provisioning and stored in persistent key slots. During
 provisioning an ECC key pair is generated and stored in a persistent key slot as

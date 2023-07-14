@@ -1,2 +1,3 @@
 TPM_IBM,tpmibm
+TPM_TCG,tpmtcg
 UTA_SIM,sim
