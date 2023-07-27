@@ -124,16 +124,19 @@ uta_rc tpm_open(const uta_context_v1_t *tpm_context)
     }
 
     ret = Tss2_Tcti_Device_Init(NULL, &size, 0);
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
     tpm_context_w->tcti_ctx = (TSS2_TCTI_CONTEXT *) calloc(1, size);
-    if(tpm_context_w->tcti_ctx == NULL){
+    if(tpm_context_w->tcti_ctx == NULL)
+    {
         return UTA_TA_ERROR;
     }
 
     ret = Tss2_Tcti_Device_Init(tpm_context_w->tcti_ctx, &size, CONFIGURED_TPM_DEVICE);
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
@@ -141,7 +144,8 @@ uta_rc tpm_open(const uta_context_v1_t *tpm_context)
         tpm_context->tcti_ctx,
         NULL);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
@@ -179,7 +183,8 @@ uta_rc tpm_open(const uta_context_v1_t *tpm_context)
         TPM2_ALG_SHA256,
         &tpm_context_w->session);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
@@ -314,7 +319,8 @@ uta_rc tpm_derive_key(const uta_context_v1_t *tpm_context, uint8_t *key,
         sessionAttributes,
         0xff);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
@@ -333,7 +339,8 @@ uta_rc tpm_derive_key(const uta_context_v1_t *tpm_context, uint8_t *key,
         return UTA_TA_ERROR;
     }
 
-    if(outHMAC->size < len_key){
+    if(outHMAC->size < len_key)
+    {
         return UTA_TA_ERROR;
     }
 
@@ -381,7 +388,8 @@ uta_rc tpm_get_random(const uta_context_v1_t *tpm_context, uint8_t *random,
         sessionAttributes,
         0xff);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
@@ -398,7 +406,8 @@ uta_rc tpm_get_random(const uta_context_v1_t *tpm_context, uint8_t *random,
             bytesRequested,
             &randomBytes);
 
-        if(ret != TSS2_RC_SUCCESS){
+        if(ret != TSS2_RC_SUCCESS)
+        {
             free(randomBytes);
             return UTA_TA_ERROR;
         }
@@ -505,7 +514,8 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t *tpm_context, uint8_t *uuid)
         &creationHash,
         &creationTicket);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         /* Release the accesslock mutex (ignore return code) */
         (void)pthread_mutex_unlock(&tpm_context_w->accesslock);
         return UTA_TA_ERROR;
@@ -516,7 +526,8 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t *tpm_context, uint8_t *uuid)
         primaryHandle,
         &authValuePrimary);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
@@ -533,7 +544,8 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t *tpm_context, uint8_t *uuid)
         sessionAttributes,
         0xff);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
@@ -547,26 +559,24 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t *tpm_context, uint8_t *uuid)
         TPM2_ALG_SHA256,
         &outHMAC);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
-    if(outHMAC->size < 16){
+    if(outHMAC->size < 16)
+    {
         return UTA_TA_ERROR;
     }
 
     ret = Esys_FlushContext(tpm_context->esys_context, primaryHandle);
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
     /* Release the accesslock mutex (ignore return code) */
     (void)pthread_mutex_unlock(&tpm_context_w->accesslock);
-
-    if(ret != 0)
-    {
-        return UTA_TA_ERROR;
-    }
 
     /* Copy the first 16 bytes to uuid */
     memcpy(uuid, outHMAC->buffer, 16);
@@ -611,7 +621,8 @@ uta_rc tpm_self_test(const uta_context_v1_t *tpm_context)
         ESYS_TR_NONE,
         1);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         /* Release the accesslock mutex (ignore return code) */
         (void)pthread_mutex_unlock(&tpm_context_w->accesslock);
         return UTA_TA_ERROR;
@@ -625,14 +636,16 @@ uta_rc tpm_self_test(const uta_context_v1_t *tpm_context)
         &outData,
         &testResult);
 
-    if(ret != TSS2_RC_SUCCESS){
+    if(ret != TSS2_RC_SUCCESS)
+    {
         return UTA_TA_ERROR;
     }
 
     /* Release the accesslock mutex (ignore return code) */
     (void)pthread_mutex_unlock(&tpm_context_w->accesslock);
 
-    if(testResult != TSS2_RC_SUCCESS){
+    if(testResult != TSS2_RC_SUCCESS)
+    {
         free(outData);
         return UTA_TA_ERROR;
     }
