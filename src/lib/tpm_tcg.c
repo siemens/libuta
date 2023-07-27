@@ -478,11 +478,6 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t *tpm_context, uint8_t *uuid)
         .count = 0,
     };
 
-    TPM2B_PUBLIC *outPublic;
-    TPM2B_CREATION_DATA *creationData;
-    TPM2B_DIGEST *creationHash;
-    TPMT_TK_CREATION *creationTicket;
-
     /* Lock the device access with the accesslock mutex */
     ret_val = pthread_mutex_lock(&tpm_context_w->accesslock);
     if (ret_val != 0)
@@ -509,10 +504,10 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t *tpm_context, uint8_t *uuid)
         &outsideInfo,
         &creationPCR,
         &primaryHandle,
-        &outPublic,
-        &creationData,
-        &creationHash,
-        &creationTicket);
+        NULL,
+        NULL,
+        NULL,
+        NULL);
 
     if(ret != TSS2_RC_SUCCESS)
     {
