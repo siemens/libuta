@@ -1,3 +1,10 @@
+libuta (1.2.0-0) stable; urgency=medium
+
+  * Fix output format of tpm_ibm rng function
+  * Add TPM_TCG backend
+
+ -- Thomas Zeschg <thomas.zeschg@siemens.com>  Thu, 27 Jul 2023 12:12:45 +0200
+
 libuta (1.1.1-0) stable; urgency=medium
 
   * Improve TPM provisioning script
