@@ -550,7 +550,7 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t *tpm_context, uint8_t *uuid)
         ESYS_TR_PASSWORD,
         tpm_context->session,
         ESYS_TR_NONE,
-        &test_buffer,
+        &dv_buffer,
         TPM2_ALG_SHA256,
         &outHMAC);
 
