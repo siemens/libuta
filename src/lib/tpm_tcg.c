@@ -255,8 +255,8 @@ uta_rc tpm_derive_key(const uta_context_v1_t *tpm_context, uint8_t *key,
 
     TPM2_HANDLE TPMhmacKeyHandle = 0;
     ESYS_TR hmacKeyHandle = ESYS_TR_NONE;
-    TPM2B_MAX_BUFFER test_buffer = { .size = len_dv,
-                                     .buffer={0}} ;
+    TPM2B_MAX_BUFFER dv_buffer = { .size = len_dv,
+                                   .buffer={0}} ;
     TPM2B_DIGEST *outHMAC;
 
     /* Check key_slot */
@@ -297,7 +297,7 @@ uta_rc tpm_derive_key(const uta_context_v1_t *tpm_context, uint8_t *key,
     }
 
     /* Calculate HMAC using TPM key */
-    memcpy(test_buffer.buffer, dv, len_dv);
+    memcpy(dv_buffer.buffer, dv, len_dv);
 
     ret = Esys_TR_FromTPMPublic(
         tpm_context->esys_context,
@@ -330,7 +330,7 @@ uta_rc tpm_derive_key(const uta_context_v1_t *tpm_context, uint8_t *key,
         ESYS_TR_PASSWORD,
         tpm_context->session,
         ESYS_TR_NONE,
-        &test_buffer,
+        &dv_buffer,
         TPM2_ALG_SHA256,
         &outHMAC);
 
@@ -531,8 +531,8 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t *tpm_context, uint8_t *uuid)
         return UTA_TA_ERROR;
     }
 
-    TPM2B_MAX_BUFFER test_buffer = { .size = 8,
-                                     .buffer={0x44, 0x45, 0x56, 0x49, 0x43, 0x45, 0x49, 0x44}} ;
+    TPM2B_MAX_BUFFER dv_buffer = { .size = 8,
+                                   .buffer={0x44, 0x45, 0x56, 0x49, 0x43, 0x45, 0x49, 0x44}} ;
     TPM2B_DIGEST *outHMAC;
 
 
