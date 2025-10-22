@@ -42,6 +42,9 @@ CONFLICTS=$(awk -F, "{ if (\$2 != \"$CONFNAME\") printf \"libuta-%s, \", \$2;}" 
 if [ "$CONFNAME" == "tpmibm" ]; then
   HW_SPECIFIC_BUILD_DEPENDS=", libtss-dev"
   HW_SPECIFIC_PACKAGE_DEPENDS=", libtss0"
+elif [ "$CONFNAME" == "tpmtcg" ]; then
+  HW_SPECIFIC_BUILD_DEPENDS=", libtss2-dev"
+  HW_SPECIFIC_PACKAGE_DEPENDS=""
 else
   HW_SPECIFIC_BUILD_DEPENDS=""
   HW_SPECIFIC_PACKAGE_DEPENDS=""
