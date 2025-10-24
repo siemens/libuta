@@ -148,7 +148,7 @@ For packaging the TPM_IBM variant of the library, the IBM TSS must be installed
 on the build machine.
 
 #### Configuration
-* First `./bootstrap` has to be invoked
+
 * For each hardware configuration, a separate Debian package has to be built
 * The configuration of the trust anchor type is done by calling the
   `debian/configure` script.
