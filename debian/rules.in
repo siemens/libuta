@@ -26,9 +26,9 @@
 #export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 PKGNAME=libuta
 PREFIX=/usr
-DEVDIR=$(PWD)/debian/$(PKGNAME)-dev
-LIBDIR=$(PWD)/debian/$(PKGNAME)-%confname%
-KEY_DERIVE_TOOL_DIR=$(PWD)/debian/$(PKGNAME)-derive-tool
+DEVDIR=$(CURDIR)/debian/$(PKGNAME)-dev
+LIBDIR=$(CURDIR)/debian/$(PKGNAME)-%confname%
+KEY_DERIVE_TOOL_DIR=$(CURDIR)/debian/$(PKGNAME)-derive-tool
 CC=$(DEB_HOST_GNU_TYPE)-gcc
 
 
