@@ -47,6 +47,7 @@ simulator with a uniform interface.
       * [Thread safety](#thread-safety)
       * [UTA Key Hierarchy](#uta-key-hierarchy)
          * [TPM TCG and TPM IBM](#tpm-tcg-and-tpm-ibm)
+      * [Rust Bindings](#rust-bindings)
       * [Coding Standard](#coding-standard)
       * [Versioning](#versioning)
 
@@ -501,6 +502,13 @@ primary HMAC key in the endorsement hierarchy using the 8 Byte string
 |       +------+       | |     +-------+   +-------+     |
 +----------------------+ +-------------------------------+
 ```
+
+## Rust Bindings
+
+This library includes an interface for the [Rust programming
+language](https://rust-lang.org/), located in the rust-bindings subdirectory.
+For detailed instructions and usage information, please refer to the dedicated
+[README file](rust-bindings/README.md).
 
 ## Coding Standard
 The UTA library code is oriented to the Barr Group's Embedded C Coding Standard.

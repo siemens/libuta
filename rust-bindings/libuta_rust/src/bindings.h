@@ -1,0 +1,21 @@
+/* Unified Trust Anchor API Rust Wrapper
+*
+* Includes uta.h from include path
+*
+* Copyright (c) Siemens Mobility GmbH, 2025
+*
+* Authors:
+*    Christian P. Feist <christian.feist@siemens.com>
+*    Hermann Seuschek <hermann.seuschek@siemens.com>
+*
+* This work is licensed under the terms of the Apache Software License
+* 2.0. See the COPYING file in the top-level directory.
+*
+* SPDX-FileCopyrightText: Copyright 2025 Siemens
+* SPDX-License-Identifier: Apache-2.0
+*/
+
+/* For this include, we assume that libuta is properly installed on the system
+*  and that uta.h can be found in the system's include path.
+*/
+#include <uta.h>

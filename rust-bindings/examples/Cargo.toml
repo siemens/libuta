@@ -1,0 +1,33 @@
+# Unified Trust Anchor API Rust Wrapper
+#
+# Copyright (c) Siemens Mobility GmbH, 2025
+#
+# Authors:
+#    Christian P. Feist <christian.feist@siemens.com>
+#    Hermann Seuschek <hermann.seuschek@siemens.com>
+#
+# This work is licensed under the terms of the Apache Software License
+# 2.0. See the COPYING file in the top-level directory.
+#
+# SPDX-FileCopyrightText: Copyright 2025 Siemens
+# SPDX-License-Identifier: Apache-2.0
+#
+[package]
+name = "examples"
+version = "1.2.0"
+authors = ["Christian P. Feist <christian.feist@siemens.com>", "Hermann Seuschek <hermann.seuschek@siemens.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+libuta_rust = {path = "../libuta_rust"}
+
+[[bin]]
+name = "uta_examples"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
