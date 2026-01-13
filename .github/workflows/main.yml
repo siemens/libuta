@@ -1,5 +1,5 @@
 #
-# Copyright (c) Siemens Mobility GmbH, 2022
+# Copyright (c) Siemens Mobility GmbH, 2022-2026
 #
 # Author: Thomas Zeschg <thomas.zeschg@siemens.com>
 #
@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install TPM Simulator
         run: |
-          wget https://jaist.dl.sourceforge.net/project/ibmswtpm2/ibmtpm1682.tar.gz
+          wget -O ibmtpm1682.tar.gz https://sourceforge.net/projects/ibmswtpm2/files/ibmtpm1682.tar.gz/download
           mkdir tpm_simulator
           cd tpm_simulator
           tar -xf ../ibmtpm1682.tar.gz
