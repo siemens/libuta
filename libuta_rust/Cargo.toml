@@ -1,0 +1,39 @@
+# Unified Trust Anchor API Rust Wrapper
+#
+# Copyright (c) Siemens Mobility GmbH, 2026
+#
+# Authors:
+#    Christian P. Feist <christian.feist@siemens.com>
+#    Hermann Seuschek <hermann.seuschek@siemens.com>
+#
+# This work is licensed under the terms of the Apache Software License
+# 2.0. See the COPYING file in the top-level directory.
+#
+# SPDX-FileCopyrightText: Copyright 2026 Siemens
+# SPDX-License-Identifier: Apache-2.0
+#
+[package]
+name = "libuta_rust"
+license = "Apache-2.0"
+description = "Rust wrapper for the Unified Trust Anchor API (libuta)"
+repository = "https://github.com/siemens/libuta"
+readme = "README.md"
+version = "1.2.0"
+authors = ["Christian P. Feist <christian.feist@siemens.com>", "Hermann Seuschek <hermann.seuschek@siemens.com>"]
+categories = ["api-bindings", "cryptography"]
+keywords = ["tpm", "trust-anchor", "libuta", "hardware-security", "cryptography"]
+edition = "2021"
+build = "build.rs"
+rust-version = "1.85"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+bindgen = "0.71.1"
+
+[lib]
+path = "src/lib.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
