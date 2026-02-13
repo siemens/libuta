@@ -40,9 +40,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install TPM Simulator
+      - name: Download and verify TPM Simulator
         run: |
           wget -O ibmtpm1682.tar.gz https://sourceforge.net/projects/ibmswtpm2/files/ibmtpm1682.tar.gz/download
+          echo "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ibmtpm1682.tar.gz" | sha256sum -c -
+      - name: Install TPM Simulator
+        run: |
           mkdir tpm_simulator
           cd tpm_simulator
           tar -xf ../ibmtpm1682.tar.gz
