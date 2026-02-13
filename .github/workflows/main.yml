@@ -83,3 +83,22 @@ jobs:
       - name: Test [user provided keys]
         run: |
           uta_reg_test key0.bin key1.bin
+
+  test_uta_rust_bindings:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build and install libuta
+        run: |
+          ./bootstrap
+          ./configure HARDWARE=UTA_SIM
+          make
+          sudo make install
+          sudo ldconfig
+      - name: Build rust bindings and run tests
+        run: |
+          cd libuta_rust
+          export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
+          cargo build
+          cargo test
