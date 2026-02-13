@@ -20,14 +20,17 @@ Copyright (c) 2026 Siemens Mobility GmbH.
 * **libuta C library** properly installed:
    * Header file `uta.h` must be in the compiler's include path (e.g., `/usr/local/include/uta.h`)
    * Shared library must be in the system library path (e.g., `/usr/lib` or `/lib`)
-   * **Note:** On Debian-based systems, `/usr/local/lib` is not in the default search path. Add it with: `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
-* **Rust toolchain** installed (on Debian-based systems: `apt install rustc`)
-   * Tested with Rust `1.85.0 (4d91de4e4 2025-02-17)` or later
-* **LLVM** installed (required by bindgen), see [bindgen requirements](https://rust-lang.github.io/rust-bindgen/requirements.html)
+   * **Note:** On Debian-based systems, `/usr/local/lib` may not be in the default search path.
+      - Add it to the build time (compiler / linker) search path with: `export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH`
+      - Add it to the runtime search path with: `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
+* **Rust toolchain** installed (see e.g., https://rust-lang.github.io/book/ch01-01-installation.html)
+   * Tested with Rust `1.85.0 (4d91de4e4 2025-02-17)`
+* **libclang** installed (required by bindgen), see [bindgen requirements](https://rust-lang.github.io/rust-bindgen/requirements.html)
+   * To install it on Debian-based systems use `apt install libclang-dev`
 
 ## Architecture
 
-.The Rust bindings for libuta use a two-layer architecture. The **lower layer**
+The Rust bindings for libuta use a two-layer architecture. The **lower layer**
 (`mod bindings`) provides a direct mapping of the C API to Rust and is primarily
 generated using bindgen, exposing all available symbols. The **upper layer** (`mod api`)
 builds on top of the lower layer bindings, importing only the necessary components and
