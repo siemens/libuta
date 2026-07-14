@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: Copyright 2020-2026 Siemens
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Unified Trust Anchor API
 
 ![logo](logo.png)

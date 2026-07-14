@@ -1,13 +1,6 @@
-#
-# Copyright (c) Siemens Mobility GmbH, 2022-2026
-#
-# Author: Thomas Zeschg <thomas.zeschg@siemens.com>
-#
-# This work is licensed under the terms of the Apache Software License 
-# 2.0. See the COPYING file in the top-level directory.
+# SPDX-FileCopyrightText: Copyright 2020-2026 Siemens
 #
 # SPDX-License-Identifier: Apache-2.0
-#
 
 name: CI
 

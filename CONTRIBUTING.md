@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: Copyright 2020-2026 Siemens
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Contributing
 
 We welcome contributions in several forms, e.g.
