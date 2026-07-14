@@ -8,7 +8,7 @@ This project is a proof-of-concept implementation of the Unified Trust Anchor
 API, allowing the usage of different hardware trust anchor and a software
 simulator with a uniform interface.
 
-![UTA Library](./UTA.png)
+![UTA Library](./UTA.drawio.png)
 
 ## Contents
    * [Unified Trust Anchor API](#unified-trust-anchor-api)
