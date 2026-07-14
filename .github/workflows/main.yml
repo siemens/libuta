@@ -105,3 +105,13 @@ jobs:
         uses: fsfe/reuse-action@v6
         with:
           args: --include-submodules lint
+
+  style-check:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Style check
+        run: |
+          FILES=$(find . -name '*.c' -o -name '*.h')
+          clang-format --dry-run --Werror $FILES
