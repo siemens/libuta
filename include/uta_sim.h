@@ -20,7 +20,12 @@
 /*******************************************************************************
  * Defines
  ******************************************************************************/
- /* 32 Byte Keys for Key Slot 0 and 1 used for the TA Software Simulation */
+ /*
+  * 32 Byte Keys for Key Slot 0 and 1 used for the TA Software Simulation
+  *
+  * NOTE: This is not a production key and is solely used for testing and
+  * development purposes!
+  */
  #define KEY_SLOT_0 {0x80,0x6d,0x42,0x7c,0xfd,0x33,0x7f,0xcf, \
                      0xa3,0xe9,0xf1,0xa9,0xf9,0x20,0x27,0x27, \
                      0x91,0xc0,0x03,0x60,0x33,0x90,0xdd,0x26, \
