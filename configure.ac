@@ -11,8 +11,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Define the desired mbedtls tag to checkout
-# m4_define([mbedtls_ref], [mbedtls-2.7.15])
-m4_define([mbedtls_ref], [mbedtls-2.16.6])
+m4_define([MBEDTLS_URL], [https://github.com/Mbed-TLS/mbedtls])
+m4_define([MBEDTLS_REF], [mbedtls-2.16.12])
+m4_define([MBEDTLS_SHA], [cf4667126010c665341f9e50ef691b7ef8294188])
+m4_define([MBEDTLS_DIR], [./src/mbedtls])
 
 # Versioning
 m4_define([major_version], [1])
@@ -98,9 +100,31 @@ AM_CONDITIONAL([HW_BACKEND_UTA_SIM],[test "x$HARDWARE" = "xUTA_SIM"])
 AM_CONDITIONAL([HW_BACKEND_TPM_TCG],[test "x$HARDWARE" = "xTPM_TCG"])
 
 # Clone mbedtls only if nedded
-AS_IF([test "x$HARDWARE" = "xUTA_SIM" || test "x$enable_tools" = "xyes" ],AS_IF([test -d ./src/mbedtls],
-	git -C ./src/mbedtls fetch --tags && git -C ./src/mbedtls checkout mbedtls_ref,
-	git clone -b mbedtls_ref --depth 1 https://github.com/ARMmbed/mbedtls.git ./src/mbedtls))
+AS_IF([test "x$HARDWARE" = "xUTA_SIM" || test "x$enable_tools" = "xyes"],
+   [
+      # Clone or update MbedTLS
+      AS_IF([test -d "MBEDTLS_DIR"],
+         [
+               # Directory exists — fetch and checkout
+               git -C "MBEDTLS_DIR" fetch --tags && \
+               git -C "MBEDTLS_DIR" checkout MBEDTLS_REF
+         ],
+         [
+               # Directory does not exist — fresh shallow clone
+               git clone --branch MBEDTLS_REF --single-branch --depth 1 MBEDTLS_URL "MBEDTLS_DIR"
+         ]
+      )
+      # Verify commit SHA
+      ACTUAL_COMMIT_SHA=$(git -C "MBEDTLS_DIR" rev-parse "HEAD")
+
+      AS_IF([test "$ACTUAL_COMMIT_SHA" = "MBEDTLS_SHA"],
+         [AC_MSG_RESULT([ok])],
+         [AC_MSG_ERROR([
+               MbedTLS commit SHA mismatch!
+         ])]
+      )
+    ]
+)
 
 # Checks for libraries.
 AS_IF([test "x$HARDWARE" = "xTPM_IBM"],AC_SEARCH_LIBS([TSS_Create], [tss], [], [AC_MSG_ERROR([unable to find the IBM software stack])]))
