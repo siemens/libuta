@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: Copyright 2026 Siemens
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Rust Bindings for the Unified Trust Anchor API
 
 This crate is part of the Unified Trust Anchor API (libuta) and provides

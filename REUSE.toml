@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright 2026 Siemens
+#
+# SPDX-License-Identifier: Apache-2.0
+
+version = 1
+
+[[annotations]]
+path = "debian/*"
+SPDX-FileCopyrightText = "Copyright 2022 - 2026 Siemens"
+SPDX-License-Identifier = "Apache-2.0"
+precedence = "override"
+
+[[annotations]]
+path = "*.png"
+SPDX-FileCopyrightText = "Copyright 2022 - 2026 Siemens"
+SPDX-License-Identifier = "Apache-2.0"
+precedence = "override"
+
+[[annotations]]
+path = "CLA-1_0.pdf"
+SPDX-FileCopyrightText = "Copyright 2022 - 2026 Siemens"
+SPDX-License-Identifier = "Apache-2.0"
+precedence = "override"

@@ -1,13 +1,6 @@
-#
-# Copyright (c) Siemens Mobility GmbH, 2022-2026
-#
-# Author: Thomas Zeschg <thomas.zeschg@siemens.com>
-#
-# This work is licensed under the terms of the Apache Software License 
-# 2.0. See the COPYING file in the top-level directory.
+# SPDX-FileCopyrightText: Copyright 2020-2026 Siemens
 #
 # SPDX-License-Identifier: Apache-2.0
-#
 
 name: CI
 
@@ -102,3 +95,13 @@ jobs:
           export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
           cargo build
           cargo test
+
+  reuse-compliance-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v6
+        with:
+          args: --include-submodules lint
