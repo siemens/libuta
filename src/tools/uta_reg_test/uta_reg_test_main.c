@@ -75,7 +75,7 @@ static int test_read_version(uta_context_v1_t * uta_context);
 static int read_keys(char ** key_files, int num);
 static void print_usage(char * name);
 static void * thread_test_1(void * uta_context);
-static void * thread_test_2(void *);
+static void * thread_test_2(void * arg);
 
 /* Define the test cases */
 test_case_t test_cases[] = {test_read_version, test_read_uuid, run_self_test, test_trng, test_derive_key, 0};
@@ -563,12 +563,13 @@ static void * thread_test_1(void * uta_context)
  * @param[in,out] uta_context Pointer to the uta_context struct.
  * @return return 0 if the tests completed successfully, 1 otherwise.
  */
-static void * thread_test_2(void *)
+static void * thread_test_2(void * arg)
 {
     uta_context_v1_t * uta_context;
     int ret;
     int i;
     uta_rc rc;
+    (void)arg; /* suppress unused warning */
 
     /* Allocate memory for the context */
     uta_context = malloc(uta.context_v1_size());
