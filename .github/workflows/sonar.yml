@@ -1,0 +1,133 @@
+# SPDX-FileCopyrightText: Copyright 2026 Siemens
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: SonarQube
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build_uta_sim:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output/uta_sim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
+      - name: Run Build Wrapper
+        run: |
+          ./bootstrap
+          ./configure HARDWARE=UTA_SIM --enable-tools
+          mkdir -p ${{ env.BUILD_WRAPPER_OUT_DIR }}
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: uta_sim
+          path: ${{ env.BUILD_WRAPPER_OUT_DIR }}
+
+  build_tpm_tcg:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output/tpm_tcg
+    steps:
+      - name: Checkout TCG TSS
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          repository: 'tpm2-software/tpm2-tss'
+          ref: '506c5e6db0c8514f321dc16a0da2580483f3df04'
+      - name: Install TCG TSS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf-archive libcmocka0 libcmocka-dev procps iproute2 build-essential pkg-config gcc libtool automake libssl-dev uthash-dev autoconf doxygen libjson-c-dev libini-config-dev libcurl4-openssl-dev uuid-dev libltdl-dev libusb-1.0-0-dev libftdi-dev
+          ./bootstrap
+          ./configure
+          make
+          sudo make install
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
+      - name: Run Build Wrapper
+        run: |
+          ./bootstrap
+          ./configure HARDWARE=TPM_TCG --enable-tools
+          mkdir -p ${{ env.BUILD_WRAPPER_OUT_DIR }}
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: tpm_tcg
+          path: ${{ env.BUILD_WRAPPER_OUT_DIR }}
+
+  build_tpm_ibm:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output/tpm_ibm
+    steps:
+      - name: Install IBM TSS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libtss0 libtss-dev tss2
+#          sudo mkdir -p /var/lib/tpm_ibm
+#          sudo chown root:docker /var/lib/tpm_ibm
+#          sudo chmod 0770 /var/lib/tpm_ibm
+#          ls -la
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
+      - name: Run Build Wrapper
+        run: |
+          ./bootstrap
+          ./configure HARDWARE=TPM_IBM --enable-tools
+          mkdir -p ${{ env.BUILD_WRAPPER_OUT_DIR }}
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: tpm_ibm
+          path: ${{ env.BUILD_WRAPPER_OUT_DIR }}
+
+  sonar-analysis:
+    runs-on: ubuntu-latest
+    needs: [build_uta_sim, build_tpm_tcg, build_tpm_ibm]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: actions/download-artifact@v4
+        with:
+          name: uta_sim
+          path: build_wrapper_output/uta_sim
+      - uses: actions/download-artifact@v4
+        with:
+          name: tpm_tcg
+          path: build_wrapper_output/tpm_tcg
+      - uses: actions/download-artifact@v4
+        with:
+          name: tpm_ibm
+          path: build_wrapper_output/tpm_ibm
+      - name: Merge build wrapper outputs
+        run: |
+          jq -s 'add' build_wrapper_output/uta_sim/compile_commands.json build_wrapper_output/tpm_tcg/compile_commands.json build_wrapper_output/tpm_ibm/compile_commands.json > build_wrapper_output/compile_commands.json
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            --define sonar.cfamily.compile-commands=build_wrapper_output/compile_commands.json
