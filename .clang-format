@@ -61,6 +61,9 @@ AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: MultiLine
+# for clang-format >= 19
+BreakAfterReturnType: None
+BreakTemplateDeclarations: MultiLine
 AttributeMacros:
   - __capability
 BinPackArguments: false
@@ -172,7 +175,7 @@ PenaltyBreakString: 1000
 PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyIndentedWhitespace: 0
-PenaltyReturnTypeOnItsOwnLine: 60
+PenaltyReturnTypeOnItsOwnLine: 10000
 PointerAlignment: Middle
 PPIndentWidth:   -1
 QualifierAlignment: Leave

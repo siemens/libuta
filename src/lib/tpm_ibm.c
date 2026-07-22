@@ -142,8 +142,11 @@ struct _uta_context_v1_t {
  ******************************************************************************/
 static uint32_t tpm_start_hmac_session(const uta_context_v1_t * tpm_context);
 static uint32_t tpm_flush_context(const uta_context_v1_t * tpm_context, uint32_t handle_number);
-static uint32_t
-tpm_calc_hmac(const uta_context_v1_t * tpm_context, uint8_t * hmac, const uint8_t * deriv_val, uint32_t hmacKeyHandle);
+static uint32_t tpm_calc_hmac(
+    const uta_context_v1_t * tpm_context,
+    uint8_t * hmac,
+    const uint8_t * deriv_val,
+    uint32_t hmacKeyHandle);
 static uint32_t tpm_get_rand(const uta_context_v1_t * tpm_context, uint8_t * randomNumber, size_t len_random);
 static uint32_t tpm_create_endosement_key(const uta_context_v1_t * tpm_context, uint32_t * handle);
 static uint32_t tpm_start_selftest(const uta_context_v1_t * tpm_context);
@@ -572,8 +575,11 @@ static uint32_t tpm_flush_context(const uta_context_v1_t * tpm_context, uint32_t
  * @param[in] hmacKeyHandle Specifies the master key of the HMAC function.
  * @return IBM TSS return code.
  */
-static uint32_t
-tpm_calc_hmac(const uta_context_v1_t * tpm_context, uint8_t * hmac, const uint8_t * deriv_val, uint32_t hmacKeyHandle)
+static uint32_t tpm_calc_hmac(
+    const uta_context_v1_t * tpm_context,
+    uint8_t * hmac,
+    const uint8_t * deriv_val,
+    uint32_t hmacKeyHandle)
 {
     TPM_RC rc = 0;
     HMAC_In in;
