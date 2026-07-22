@@ -102,7 +102,8 @@ int main(int argc, char ** argv)
     int cpid;
 #endif
     if (argc == 1) {
-        printf("Running regression tests without reference keys. Only the return codes are verified.\n\n");
+        printf("Running regression tests without reference keys.\n");
+        printf("Only the return codes are verified.\n\n");
     } else if (argc == 2) {
         ret = read_keys(&argv[1], (argc - 1));
         if (ret != 0) {
@@ -110,9 +111,8 @@ int main(int argc, char ** argv)
             print_usage(argv[0]);
             return 1;
         }
-        printf(
-            "Running regression tests with reference key of key slot 0. For key slot 1 only the return codes are "
-            "verified.\n\n");
+        printf("Running regression tests with reference key of key slot 0.\n");
+        printf("For key slot 1 only the return codes are verified.\n\n");
     } else if (argc == 3) {
         ret = read_keys(&argv[1], (argc - 1));
         if (ret != 0) {
@@ -128,9 +128,8 @@ int main(int argc, char ** argv)
     }
 
 #ifndef MULTIPROCESSING
-    printf(
-        "NOTE: Multiprocessing has been disabled during configure. Only multithreading with one single open call is "
-        "tested\n\n");
+    printf("NOTE: Multiprocessing has been disabled during configure.\n");
+    printf("Only multithreading with one single open call is tested\n\n");
 #endif
 
     srand((unsigned)time(&t));
