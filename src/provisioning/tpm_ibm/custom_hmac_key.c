@@ -125,6 +125,9 @@
 #define HMAC_KEY_HASH_SIZE 32
 #define HMAC_SEED_SIZE 32
 #define AUTH_POLICY_BIN_SIZE 32
+#define AUTH_POLICY_BIN                                                                                                \
+    {0xbe, 0xf5, 0x6b, 0x8c, 0x1c, 0xc8, 0x4e, 0x11, 0xed, 0xd7, 0x17, 0x52, 0x8d, 0x2c, 0xd9, 0x93,                   \
+     0x56, 0xbd, 0x2b, 0xbf, 0x8f, 0x01, 0x52, 0x09, 0xc3, 0xf8, 0x4a, 0xee, 0xab, 0xa8, 0xe8, 0xa2};
 
 /*******************************************************************************
  * Private function prototypes
@@ -195,9 +198,7 @@ static int loadexternal_hmac_key(char * key_path)
     fread(hmac_key_hash, HMAC_KEY_HASH_SIZE, 1, fileptr); // Read in the entire file
     (void)fclose(fileptr);                                // Close the file
 
-    BYTE auth_policy_bin[AUTH_POLICY_BIN_SIZE] = {0xbe, 0xf5, 0x6b, 0x8c, 0x1c, 0xc8, 0x4e, 0x11, 0xed, 0xd7, 0x17,
-                                                  0x52, 0x8d, 0x2c, 0xd9, 0x93, 0x56, 0xbd, 0x2b, 0xbf, 0x8f, 0x01,
-                                                  0x52, 0x09, 0xc3, 0xf8, 0x4a, 0xee, 0xab, 0xa8, 0xe8, 0xa2};
+    BYTE auth_policy_bin[AUTH_POLICY_BIN_SIZE] = AUTH_POLICY_BIN;
 
     printf("INFO: Using TPM2_LoadExternal() to load custom HMAC key...\n");
 
