@@ -225,6 +225,7 @@ static int get_passphrase_from_ta(
  */
 int main(int argc, char * argv[])
 {
+    int ret = EXIT_FAILURE;
     char * passphrase = NULL;
     int dflag = 0;
     int eflag = 0;
@@ -262,19 +263,19 @@ int main(int argc, char * argv[])
             fprintf(stderr, "-k <key_slot>: select key_slot from 0 and 1;\n");
             fprintf(stderr, "   (default: 1, key_slot containing device specific key)\n");
             fprintf(stderr, "-h This help message\n");
-            return 1;
+            goto cleanup;
         }
     }
 
     if (1 == dflag) {
         if (UTA_LEN_DV_V1 < strnlen(dval, UTA_LEN_DV_V1 + 1)) {
             fprintf(stderr, "ERROR: Derivation string must be %d or less characters long\n", UTA_LEN_DV_V1);
-            return 1;
+            goto cleanup;
         }
     } else {
         dval = malloc(9);
         if (NULL == dval) {
-            return 1;
+            goto cleanup;
         }
         snprintf(dval, 9, "default!");
     }
@@ -286,7 +287,7 @@ int main(int argc, char * argv[])
             encoding = HEX_ENCODING;
         } else {
             fprintf(stderr, "ERROR: Wrong encoding, specify either 'base64' or 'hex'\n");
-            return 1;
+            goto cleanup;
         }
     } else {
         encoding = BASE64_ENCODING;
@@ -299,21 +300,26 @@ int main(int argc, char * argv[])
             key_slot = 1;
         } else {
             fprintf(stderr, "ERROR: Wrong key_slot, specify either 0 or 1\n");
-            return 1;
+            goto cleanup;
         }
     } else {
         key_slot = 1;
     }
 
     if (0 != get_passphrase_from_ta(&passphrase, dval, key_slot, encoding)) {
-        return 1;
+        goto cleanup;
     }
     printf("%s\n", passphrase);
 
-    free(passphrase);
-    if (0 == dflag) {
+    ret = EXIT_SUCCESS;
+
+cleanup:
+    if (NULL != passphrase) {
+        free(passphrase);
+    }
+    if ((0 == dflag) && (NULL != dval)) {
         free(dval);
     }
 
-    return 0;
+    return ret;
 }
