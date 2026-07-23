@@ -24,7 +24,7 @@ readonly ECC=0x81000002
 
 # Function to print out error message and exit
 by_error_print() {
-  if [ $? -ne 0 ]
+  if [[ $? -ne 0 ]]
   then
     echo "$1"
     exit 1
@@ -33,17 +33,17 @@ by_error_print() {
 
 NUMBER_OF_ARGUMENTS=$#
 
-if [ $NUMBER_OF_ARGUMENTS -eq 0 ]; then
+if [[ $NUMBER_OF_ARGUMENTS -eq 0 ]]; then
   echo "#############################"
   echo "TPM Provisioning:"
   echo "Key Slot 0: random"
   echo "Key Slot 1: random"
-elif [ $NUMBER_OF_ARGUMENTS -eq 1 ]; then
+elif [[ $NUMBER_OF_ARGUMENTS -eq 1 ]]; then
   echo "#############################"
   echo "TPM Provisioning:"
   echo "Key Slot 0: $1"
   echo "Key Slot 1: random"
-elif [ $NUMBER_OF_ARGUMENTS -eq 2 ]; then
+elif [[ $NUMBER_OF_ARGUMENTS -eq 2 ]]; then
   echo "#############################"
   echo "TPM Provisioning:"
   echo "Key Slot 0: $1"
@@ -92,7 +92,7 @@ echo "# Creating an ECC key under the storage key..."
 
 CREATELOADEDSUPPORT=$(tpm2_getcap commands | grep -i createloaded)
 
-if [ ! -z $CREATELOADEDSUPPORT ]
+if [[ ! -z $CREATELOADEDSUPPORT ]]
 then
    echo ""
    echo "# TPM2_CC_CreateLoaded command supported..."
@@ -116,9 +116,9 @@ by_error_print "Failed in making the ECC key persistent, exit..."
 
 # Load the HMAC Key0 into the TPM and make it persistent
 # If the key0.bin file is present the key will be constructed from this file and loaded as an external key
-if [ $NUMBER_OF_ARGUMENTS -gt 0 ]
+if [[ $NUMBER_OF_ARGUMENTS -gt 0 ]]
 then
-   if [ -s "$1" ]
+   if [[ -s "$1" ]]
    then
       echo ""
       echo "# Importing custom HMAC key0..."
@@ -146,7 +146,7 @@ else #the key0.bin file is not given, the TPM generates a HMAC key by itself
 
    echo ""
    echo "# Creating HMAC key0..."
-   if [ ! -z $CREATELOADEDSUPPORT ]
+   if [[ ! -z $CREATELOADEDSUPPORT ]]
    then
       tpm2_create -G hmac -C primaryKey -u hmac_key_pub.bin -r hmac_key_priv.bin -c loadedHMACKey0
       by_error_print "Failed to create the HMAC key, exit..."
@@ -167,9 +167,9 @@ fi
 
 # Load the HMAC Key1 into the TPM and make it persistent
 # If the key1.bin file is present the key will be constructed from this file and loaded as an external key
-if [ $NUMBER_OF_ARGUMENTS -eq 2 ]
+if [[ $NUMBER_OF_ARGUMENTS -eq 2 ]]
 then
-   if [ -s "$2" ]
+   if [[ -s "$2" ]]
    then
       echo ""
       echo "# Importing custom HMAC key1..."
@@ -199,7 +199,7 @@ else #the key1.bin file is not given, the TPM generates a HMAC key by itself
    echo ""
    echo "# Creating HMAC key1..."
 
-   if [ ! -z $CREATELOADEDSUPPORT ]
+   if [[ ! -z $CREATELOADEDSUPPORT ]]
    then
       tpm2_create -G hmac -C primaryKey -u hmac_key_pub.bin -r hmac_key_priv.bin -c loadedHMACKey1
       by_error_print "Failed to create the HMAC key, exit..."
