@@ -95,15 +95,15 @@ static int bytes2base64(const char * input_data, size_t input_length, char * bas
     const char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     // max_output_length includes padding and null string termination
-    int max_output_length = (4 * ((input_length + 2) / 3)) + 1;
+    size_t max_output_length = (4 * ((input_length + 2) / 3)) + 1;
     if (output_length < max_output_length) {
         return 1;
     }
 
     /* Actual conversion from binary data to base64 encoding takes place in
      * this loop. */
-    int j = 0;
-    for (int i = 0; i < input_length && j < max_output_length;) {
+    size_t j = 0;
+    for (size_t i = 0; i < input_length && j < max_output_length;) {
         uint32_t a = i < input_length ? (uint8_t)input_data[i++] : 0;
         uint32_t b = i < input_length ? (uint8_t)input_data[i++] : 0;
         uint32_t c = i < input_length ? (uint8_t)input_data[i++] : 0;
@@ -117,7 +117,7 @@ static int bytes2base64(const char * input_data, size_t input_length, char * bas
 
     /* Perform padding step with \0 termination characters. The
      * standard '='-padding is omitted. */
-    for (int i = 0; i < ((3 - (input_length % 3)) % 3); i++) {
+    for (size_t i = 0; i < ((3 - (input_length % 3)) % 3); i++) {
         base64_data[max_output_length - 2 - i] = '\0';
     }
     /* If there is no padding required, we have to terminate the string anyway.
@@ -233,7 +233,7 @@ int main(int argc, char * argv[])
     char * dval = NULL;
     char * eval = NULL;
     char * kval = NULL;
-    int key_slot = 0;
+    uint8_t key_slot = 0;
     string_encoding_t encoding = BASE64_ENCODING;
     int c;
 

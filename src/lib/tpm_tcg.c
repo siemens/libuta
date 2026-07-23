@@ -237,10 +237,16 @@ uta_rc tpm_derive_key(
 
     int ret_val;
 
+    /* Boundary check for len_dv. In this case it is limited to uint16 */
+    if (UINT16_MAX < len_dv) {
+        /* AS there is no specific error for that case, we return UTA_TA_ERROR */
+        return UTA_TA_ERROR;
+    }
+
     TPM2_HANDLE TPMhmacKeyHandle = 0;
     ESYS_TR hmacKeyHandle = ESYS_TR_NONE;
-    TPM2B_MAX_BUFFER dv_buffer = {.size = len_dv, .buffer = {0}};
-    TPM2B_DIGEST * outHMAC;
+    TPM2B_MAX_BUFFER dv_buffer = {.size = (uint16_t)len_dv, .buffer = {0}};
+    TPM2B_DIGEST * outHMAC = NULL;
 
     /* Check key_slot */
     if (key_slot > (USED_KEY_SLOTS - 1)) {
@@ -343,9 +349,15 @@ uta_rc tpm_get_random(const uta_context_v1_t * tpm_context, uint8_t * random, si
 
     TSS2_RC ret;
     int ret_val;
-    TPM2B_DIGEST * randomBytes;
-    uint32_t bytesRequested = len_random;
-    uint32_t bytesCopied;
+    TPM2B_DIGEST * randomBytes = NULL;
+
+    /* Boundary check for len_random. In this case it is limited to uint16 */
+    if (UINT16_MAX < len_random) {
+        /* AS there is no specific error for that case, we return UTA_TA_ERROR */
+        return UTA_TA_ERROR;
+    }
+
+    uint16_t bytesRequested = (uint16_t)len_random;
 
     /* Lock the device access with the accesslock mutex */
     ret_val = pthread_mutex_lock(&tpm_context_w->accesslock);
@@ -363,7 +375,7 @@ uta_rc tpm_get_random(const uta_context_v1_t * tpm_context, uint8_t * random, si
         return UTA_TA_ERROR;
     }
 
-    for (bytesCopied = 0; bytesCopied < len_random;) {
+    for (uint16_t bytesCopied = 0; bytesCopied < len_random;) {
         bytesRequested = len_random - bytesCopied;
 
         /* Get Random numbers from TPM */
@@ -378,9 +390,8 @@ uta_rc tpm_get_random(const uta_context_v1_t * tpm_context, uint8_t * random, si
             return UTA_TA_ERROR;
         }
 
-        size_t br;
         /* copy as many bytes as were received or until bytes requested */
-        for (br = 0; (br < randomBytes->size) && (bytesCopied < len_random); br++) {
+        for (size_t br = 0; (br < randomBytes->size) && (bytesCopied < len_random); br++) {
             random[bytesCopied] = randomBytes->buffer[br];
             bytesCopied++;
         }

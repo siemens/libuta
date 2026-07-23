@@ -137,7 +137,7 @@ uta_rc sim_get_random(const uta_context_v1_t * sim_context, uint8_t * random, si
     (void)sim_context; /* suppress unused warning */
 
     for (int i = 0; i < len_random; i++) {
-        random[i] = rand() % 256;
+        random[i] = (uint8_t)(rand() % 256);
     }
 
     return UTA_SUCCESS;
