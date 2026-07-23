@@ -27,7 +27,7 @@ TPM_SIMULATOR=${TPM_SIMULATOR:-0}
 
 # Configure IBM TSS (interface type and data dir must match
 # the configuration of libuta).
-if [ $TPM_SIMULATOR -eq 0 ]; then
+if [[ $TPM_SIMULATOR -eq 0 ]]; then
   export TPM_DEVICE="/dev/tpm0"
   export TPM_DATA_DIR="/var/lib/tpm_ibm"
   export TPM_INTERFACE_TYPE="dev"
@@ -38,7 +38,7 @@ fi
 
 # Function to print out error message and exit
 by_error_print() {
-  if [ $? -ne 0 ]
+  if [[ $? -ne 0 ]]
   then
     echo "$1"
     exit 1
@@ -47,17 +47,17 @@ by_error_print() {
 
 NUMBER_OF_ARGUMENTS=$#
 
-if [ $NUMBER_OF_ARGUMENTS -eq 0 ]; then
+if [[ $NUMBER_OF_ARGUMENTS -eq 0 ]]; then
   echo "#############################"
   echo "TPM Provisioning:"
   echo "Key Slot 0: random"
   echo "Key Slot 1: random"
-elif [ $NUMBER_OF_ARGUMENTS -eq 1 ]; then
+elif [[ $NUMBER_OF_ARGUMENTS -eq 1 ]]; then
   echo "#############################"
   echo "TPM Provisioning:"
   echo "Key Slot 0: $1"
   echo "Key Slot 1: random"
-elif [ $NUMBER_OF_ARGUMENTS -eq 2 ]; then
+elif [[ $NUMBER_OF_ARGUMENTS -eq 2 ]]; then
   echo "#############################"
   echo "TPM Provisioning:"
   echo "Key Slot 0: $1"
@@ -76,7 +76,7 @@ else
 fi
 echo "#############################"
 
-if [ $TPM_SIMULATOR = 1 ]; then
+if [[ $TPM_SIMULATOR = 1 ]]; then
   echo ""
   echo "# Powering TPM up..."
   tsspowerup
@@ -134,9 +134,9 @@ by_error_print "Failed to flush the transient ECC key, exit..."
 
 # Load the HMAC Key0 into the TPM and make it persistent
 # If the key0.bin file is present the key will be constructed from this file and loaded as an external key
-if [ $NUMBER_OF_ARGUMENTS -gt 0 ]
+if [[ $NUMBER_OF_ARGUMENTS -gt 0 ]]
 then
-  if [ -s "$1" ]
+  if [[ -s "$1" ]]
   then
      echo ""
      echo "# Create random seed for HMAC key hash..."
@@ -251,9 +251,9 @@ fi
 
 # Load the HMAC Key1 into the TPM and make it persistent
 # If the key1.bin file is present the key will be constructed from this file and loaded as an external key
-if [ $NUMBER_OF_ARGUMENTS -eq 2 ]
+if [[ $NUMBER_OF_ARGUMENTS -eq 2 ]]
 then
-  if [ -s "$2" ]
+  if [[ -s "$2" ]]
   then
      echo ""
      echo "# Create random seed for HMAC key hash..."
@@ -371,7 +371,7 @@ echo "# Flushing Storage Key..."
 tssflushcontext -ha $STORAGE_PKEY_HANDLE
 by_error_print "Failed to flush storage key, exit..."
 
-if [ $TPM_SIMULATOR = 1 ]; then
+if [[ $TPM_SIMULATOR = 1 ]]; then
   echo ""
   echo "# Shutting TPM down..."
   tssshutdown
