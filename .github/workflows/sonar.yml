@@ -78,7 +78,7 @@ jobs:
       - name: Install IBM TSS
         run: |
           sudo apt-get update
-          sudo apt-get install -y libtss0 libtss-dev tss2
+          sudo apt-get install -y libtss0 libtss-dev
 #          sudo mkdir -p /var/lib/tpm_ibm
 #          sudo chown root:docker /var/lib/tpm_ibm
 #          sudo chmod 0770 /var/lib/tpm_ibm
@@ -105,10 +105,32 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_uta_sim, build_tpm_tcg, build_tpm_ibm]
     steps:
+      # Install IBM TSS and TCG TSS to make headers available to SonarCloud
+      - name: Install IBM TSS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libtss0 libtss-dev
+      - name: Checkout TCG TSS
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          repository: 'tpm2-software/tpm2-tss'
+          ref: '506c5e6db0c8514f321dc16a0da2580483f3df04'
+      - name: Install TCG TSS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf-archive libcmocka0 libcmocka-dev procps iproute2 build-essential pkg-config gcc libtool automake libssl-dev uthash-dev autoconf doxygen libjson-c-dev libini-config-dev libcurl4-openssl-dev uuid-dev libltdl-dev libusb-1.0-0-dev libftdi-dev
+          ./bootstrap
+          ./configure
+          make
+          sudo make install
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Configure UTA_SIM backend to download mbedtls
+        run: |
+          ./bootstrap
+          ./configure HARDWARE=UTA_SIM --enable-tools
       - uses: actions/download-artifact@v4
         with:
           name: uta_sim
