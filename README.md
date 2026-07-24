@@ -9,6 +9,7 @@ SPDX-License-Identifier: Apache-2.0
 ![logo](logo.png)
 
 [![](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](COPYING)
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=siemens_libuta&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=siemens_libuta)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/siemens/libuta/badge)](https://scorecard.dev/viewer/?uri=github.com/siemens/libuta)
 
 This project is a proof-of-concept implementation of the Unified Trust Anchor
