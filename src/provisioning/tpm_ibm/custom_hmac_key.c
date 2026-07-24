@@ -127,12 +127,12 @@
 #define AUTH_POLICY_BIN_SIZE 32
 #define AUTH_POLICY_BIN                                                                                                \
     {0xbe, 0xf5, 0x6b, 0x8c, 0x1c, 0xc8, 0x4e, 0x11, 0xed, 0xd7, 0x17, 0x52, 0x8d, 0x2c, 0xd9, 0x93,                   \
-     0x56, 0xbd, 0x2b, 0xbf, 0x8f, 0x01, 0x52, 0x09, 0xc3, 0xf8, 0x4a, 0xee, 0xab, 0xa8, 0xe8, 0xa2};
+     0x56, 0xbd, 0x2b, 0xbf, 0x8f, 0x01, 0x52, 0x09, 0xc3, 0xf8, 0x4a, 0xee, 0xab, 0xa8, 0xe8, 0xa2}
 
 /*******************************************************************************
  * Private function prototypes
  ******************************************************************************/
-static int loadexternal_hmac_key(char * key_path);
+static int loadexternal_hmac_key(const char * key_path);
 
 /*******************************************************************************
  * Public function bodies
@@ -166,37 +166,51 @@ int main(int argc, char ** argv)
  * @param[in] key_path Path to the files.
  * @return IBM TSS return code.
  */
-static int loadexternal_hmac_key(char * key_path)
+static int loadexternal_hmac_key(const char * key_path)
 {
-    int i;
-
     TPM_RC rc = 0;
     TSS_CONTEXT * tssContext = NULL;
     LoadExternal_In in;
     LoadExternal_Out out;
 
     char hmac_key_pub_file[] = "hmac_key_pub.bin";
-    char * key_password = NULL;
+    const char * key_password = NULL;
 
-    FILE * fileptr;
+    FILE * fileptr = NULL;
     BYTE hmac_key[HMAC_KEY_SIZE];
     BYTE hmac_seed[HMAC_SEED_SIZE];
     BYTE hmac_key_hash[HMAC_KEY_HASH_SIZE];
+    size_t hmac_key_length = 0;
+    size_t hmac_seed_length = 0;
+    size_t hmac_key_hash_length = 0;
 
     // Load hmac_key from file
-    fileptr = fopen(key_path, "rb");            // Open the file in binary mode
-    fread(hmac_key, HMAC_KEY_SIZE, 1, fileptr); // Read in the entire file
-    (void)fclose(fileptr);                      // Close the file
+    fileptr = fopen(key_path, "rb"); // Open the file in binary mode
+    if (NULL != fileptr) {
+        hmac_key_length = fread(hmac_key, 1, HMAC_KEY_SIZE, fileptr); // Read in the entire file
+        (void)fclose(fileptr);                                        // Close the file
+    }
 
     // Load hmac_seed from file
-    fileptr = fopen("hmac_seed.bin", "rb");       // Open the file in binary mode
-    fread(hmac_seed, HMAC_SEED_SIZE, 1, fileptr); // Read in the entire file
-    (void)fclose(fileptr);                        // Close the file
+    fileptr = fopen("hmac_seed.bin", "rb"); // Open the file in binary mode
+    if (NULL != fileptr) {
+        hmac_seed_length = fread(hmac_seed, 1, HMAC_SEED_SIZE, fileptr); // Read in the entire file
+        (void)fclose(fileptr);                                           // Close the file
+    }
 
     // Load hmac_key_hash from file
-    fileptr = fopen("hmac_key_hash.bin", "rb");           // Open the file in binary mode
-    fread(hmac_key_hash, HMAC_KEY_HASH_SIZE, 1, fileptr); // Read in the entire file
-    (void)fclose(fileptr);                                // Close the file
+    fileptr = fopen("hmac_key_hash.bin", "rb"); // Open the file in binary mode
+    if (NULL != fileptr) {
+        hmac_key_hash_length = fread(hmac_key_hash, 1, HMAC_KEY_HASH_SIZE, fileptr); // Read in the entire file
+        (void)fclose(fileptr);                                                       // Close the file
+    }
+
+    // Check if we read the expected number of bytes
+    if ((HMAC_KEY_SIZE != hmac_key_length) || (HMAC_SEED_SIZE != hmac_seed_length) ||
+        (HMAC_KEY_HASH_SIZE != hmac_key_hash_length)) {
+        printf("ERROR: File content size mismatch!\n");
+        return EXIT_FAILURE;
+    }
 
     BYTE auth_policy_bin[AUTH_POLICY_BIN_SIZE] = AUTH_POLICY_BIN;
 
@@ -204,7 +218,6 @@ static int loadexternal_hmac_key(char * key_path)
 
     in.inPrivate.t.size = 1; /* size != 0 means that there is private data */
     in.inPrivate.t.sensitiveArea.sensitiveType = TPM_ALG_KEYEDHASH;
-    /* in.inPrivate.t.sensitiveArea.authValue.t.size = 0; */
     rc = TSS_TPM2B_StringCopy(&in.inPrivate.t.sensitiveArea.authValue.b, key_password, sizeof(TPMU_HA));
 
     in.inPrivate.t.sensitiveArea.seedValue.t.size = HMAC_SEED_SIZE;
@@ -226,11 +239,11 @@ static int loadexternal_hmac_key(char * key_path)
     in.hierarchy = TPM_RH_NULL; /* has to be null hierarchy for external sensitive data */
 
     /* write public structure to file */
-    rc = TSS_File_WriteStructure(&in.inPublic, (MarshalFunction_t)TSS_TPM2B_PUBLIC_Marshal, hmac_key_pub_file);
+    rc |= TSS_File_WriteStructure(&in.inPublic, (MarshalFunction_t)TSS_TPM2B_PUBLIC_Marshal, hmac_key_pub_file);
     printf("INFO: TSS_File_WriteStructure: rc = %08x\n", rc);
 
     /* create TSS context */
-    rc = TSS_Create(&tssContext);
+    rc |= TSS_Create(&tssContext);
     printf("INFO: TSS_Create: rc = %08x\n", rc);
 
     /* execute LoadExternal command */
@@ -266,7 +279,7 @@ static int loadexternal_hmac_key(char * key_path)
         printf("INFO: out.objectHandle = %08x\n", out.objectHandle);
         printf("INFO: out.name.t.size  = %08x\n", out.name.t.size);
         printf("INFO: out.name.t.name  =\n");
-        for (i = 0; i < out.name.t.size; i++) {
+        for (int i = 0; i < out.name.t.size; i++) {
             printf("%02x", out.name.t.name[i]);
             if ((i + 1) % 4 == 0)
                 printf(" ");
