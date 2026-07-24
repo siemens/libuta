@@ -376,7 +376,7 @@ uta_rc tpm_get_random(const uta_context_v1_t * tpm_context, uint8_t * random, si
     }
 
     for (uint16_t bytesCopied = 0; bytesCopied < len_random;) {
-        bytesRequested = len_random - bytesCopied;
+        bytesRequested = (uint16_t)len_random - bytesCopied;
 
         /* Get Random numbers from TPM */
         ret = Esys_GetRandom(
