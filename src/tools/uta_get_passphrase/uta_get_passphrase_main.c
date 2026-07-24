@@ -231,8 +231,8 @@ int main(int argc, char * argv[])
     int eflag = 0;
     int kflag = 0;
     char * dval = NULL;
-    char * eval = NULL;
-    char * kval = NULL;
+    const char * eval = NULL;
+    const char * kval = NULL;
     uint8_t key_slot = 0;
     string_encoding_t encoding = BASE64_ENCODING;
     int c;
