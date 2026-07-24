@@ -253,6 +253,7 @@ int main(int argc, char * argv[])
             break;
         case '?':
         case 'h':
+        default:
             fprintf(stderr, "### Retrieve passphrase from the UTA trust anchor ### \n\n");
             fprintf(
                 stderr, "Usage: uta_get_passphrase [-d <derivation_string>] [-e <encoding>] [-k <key_slot>] [-h]\n\n");
