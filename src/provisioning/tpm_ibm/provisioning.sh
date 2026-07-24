@@ -22,6 +22,8 @@ readonly HMAC_KEY0=81000000
 readonly HMAC_KEY1=81000001
 readonly ECC=81000002
 
+readonly message_divider="#############################"
+
 # Use environment variable or set default value
 TPM_SIMULATOR=${TPM_SIMULATOR:-0}
 
@@ -38,27 +40,36 @@ fi
 
 # Function to print out error message and exit
 by_error_print() {
+  local filename="$1"
   if [[ $? -ne 0 ]]
   then
-    echo "$1"
+    echo "$filename"
     exit 1
   fi
+  return 0
+}
+
+# Parse the hande address
+parse_handle() {
+  local to_parse="$1"
+  echo "$to_parse" | tr -cd '[[:digit:]]'
+  return 0
 }
 
 NUMBER_OF_ARGUMENTS=$#
 
 if [[ $NUMBER_OF_ARGUMENTS -eq 0 ]]; then
-  echo "#############################"
+  echo "$message_divider"
   echo "TPM Provisioning:"
   echo "Key Slot 0: random"
   echo "Key Slot 1: random"
 elif [[ $NUMBER_OF_ARGUMENTS -eq 1 ]]; then
-  echo "#############################"
+  echo "$message_divider"
   echo "TPM Provisioning:"
   echo "Key Slot 0: $1"
   echo "Key Slot 1: random"
 elif [[ $NUMBER_OF_ARGUMENTS -eq 2 ]]; then
-  echo "#############################"
+  echo "$message_divider"
   echo "TPM Provisioning:"
   echo "Key Slot 0: $1"
   echo "Key Slot 1: $2"
@@ -74,7 +85,7 @@ else
   echo "$0 <key0_file.bin> <key1_file.bin>"
   exit 1
 fi
-echo "#############################"
+echo "$message_divider"
 
 if [[ $TPM_SIMULATOR = 1 ]]; then
   echo ""
@@ -87,7 +98,7 @@ if [[ $TPM_SIMULATOR = 1 ]]; then
 fi
 
 # Define a key for the session state encryption
-export TPM_SESSION_ENCKEY=`tssgetrandom -by 16 -ns`
+export TPM_SESSION_ENCKEY=$(tssgetrandom -by 16 -ns)
 
 # Try to clear the needed key slots
 echo ""
@@ -103,7 +114,7 @@ FUNC_OUTPUT=$(tsscreateprimary -hi $HIERARCHY -ecc nistp256)
 by_error_print "Failed to create the storage primary key, exit..."
 
 # Parse out the handle address
-STORAGE_PKEY_HANDLE=$(echo $FUNC_OUTPUT |tr -cd '[[:digit:]]')
+STORAGE_PKEY_HANDLE=$(parse_handle "$FUNC_OUTPUT")
 
 echo "Handle $STORAGE_PKEY_HANDLE"
 
@@ -119,7 +130,7 @@ FUNC_OUTPUT=$(tssload -hp $STORAGE_PKEY_HANDLE -ipr ecc_priv_key.bin -ipu ecc_pu
 by_error_print "Failed to load the ECC key, exit..."
 
 # Parse out the handle address for the ECC key
-GENERAL_KEY_HANDLE=$(echo $FUNC_OUTPUT |tr -cd '[[:digit:]]')
+GENERAL_KEY_HANDLE=$(parse_handle "$FUNC_OUTPUT")
 
 echo "Handle $GENERAL_KEY_HANDLE"
 echo ""
@@ -158,7 +169,7 @@ then
      by_error_print "Failed to start policy session, exit..."
 
      # Parse out handle address for policy session
-     POLICY_HANDLE=$(echo $FUNC_OUTPUT |tr -cd '[[:digit:]]')
+     POLICY_HANDLE=$(parse_handle "$FUNC_OUTPUT")
 
      echo "Handle $POLICY_HANDLE"
      echo ""
@@ -192,7 +203,7 @@ then
      by_error_print "Failed to load duplicated HMAC key, exit..."
 
      # Parse out handle address for loaded key
-     GENERAL_KEY_HANDLE=$(echo $FUNC_OUTPUT |tr -cd '[[:digit:]]')
+     GENERAL_KEY_HANDLE=$(parse_handle "$FUNC_OUTPUT")
 
      echo "Handle $GENERAL_KEY_HANDLE"
      echo ""
@@ -233,7 +244,7 @@ else #the key0.bin file is not given, the TPM generates a HMAC key by itself
   by_error_print "Failed to load the HMAC key0, exit..."
 
   # Parse out the handle address for the ECC key
-  HMAC_KEY_HANDLE=$(echo $FUNC_OUTPUT |tr -cd '[[:digit:]]')
+  HMAC_KEY_HANDLE=$(parse_handle "$FUNC_OUTPUT")
 
   echo "Handle $HMAC_KEY_HANDLE"
 
@@ -275,7 +286,7 @@ then
      by_error_print "Failed to start policy session, exit..."
 
      # Parse out handle address for policy session
-     POLICY_HANDLE=$(echo $FUNC_OUTPUT |tr -cd '[[:digit:]]')
+     POLICY_HANDLE=$(parse_handle "$FUNC_OUTPUT")
 
      echo "Handle $POLICY_HANDLE"
      echo ""
@@ -309,7 +320,7 @@ then
      by_error_print "Failed to load duplicated HMAC key, exit..."
 
      # Parse out handle address for loaded key
-     GENERAL_KEY_HANDLE=$(echo $FUNC_OUTPUT |tr -cd '[[:digit:]]')
+     GENERAL_KEY_HANDLE=$(parse_handle "$FUNC_OUTPUT")
 
      echo "Handle $GENERAL_KEY_HANDLE"
      echo ""
@@ -350,7 +361,7 @@ else #the key1.bin file is not given, the TPM generates a HMAC key by itself
   by_error_print "Failed to load the HMAC key1, exit..."
 
   # Parse out the handle address for the ECC key
-  HMAC_KEY_HANDLE=$(echo $FUNC_OUTPUT |tr -cd '[[:digit:]]')
+  HMAC_KEY_HANDLE=$(parse_handle "$FUNC_OUTPUT")
 
   echo "Handle $HMAC_KEY_HANDLE"
 
