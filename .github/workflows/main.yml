@@ -11,12 +11,15 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   test_uta_sim:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
-        uses: actions/checkout@v3
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Build
         run: |
           ./bootstrap
@@ -32,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Download and verify TPM Simulator
         run: |
           wget -O ibmtpm1682.tar.gz https://sourceforge.net/projects/ibmswtpm2/files/ibmtpm1682.tar.gz/download
@@ -81,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Build and install libuta
         run: |
           ./bootstrap
@@ -100,9 +103,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: REUSE Compliance Check
-        uses: fsfe/reuse-action@v6
+        uses: fsfe/reuse-action@676e2d560c9a403aa252096d99fcab3e1132b0f5 # v6.0.0
         with:
           args: --include-submodules lint
 
@@ -110,7 +113,7 @@ jobs:
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Style check
         run: |
           FILES=$(find . -name '*.c' -o -name '*.h')
