@@ -112,7 +112,7 @@ static int bytes2base64(const char * input_data, size_t input_length, char * bas
         base64_data[j++] = base64_table[(t >> 18) & 0x3F];
         base64_data[j++] = base64_table[(t >> 12) & 0x3F];
         base64_data[j++] = base64_table[(t >> 6) & 0x3F];
-        base64_data[j++] = base64_table[(t) & 0x3F];
+        base64_data[j++] = base64_table[t & 0x3F];
     }
 
     /* Perform padding step with \0 termination characters. The
