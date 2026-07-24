@@ -63,6 +63,7 @@ size_t sim_context_v1_size(void) { return (sizeof(uta_context_v1_t)); }
  */
 uta_rc sim_open(const uta_context_v1_t * sim_context)
 {
+    (void)sim_context; /* suppress unused warning */
     /* Initialize the PRNG */
     time_t t;
     srand((unsigned)time(&t));
@@ -75,7 +76,11 @@ uta_rc sim_open(const uta_context_v1_t * sim_context)
  * @param[in,out] sim_context Pointer to the internal context struct.
  * @return UTA return code.
  */
-uta_rc sim_close(const uta_context_v1_t * sim_context) { return UTA_SUCCESS; }
+uta_rc sim_close(const uta_context_v1_t * sim_context)
+{
+    (void)sim_context; /* suppress unused warning */
+    return UTA_SUCCESS;
+}
 
 /**
  * @brief Derives a key using the mbedtls HMAC function.
@@ -97,6 +102,7 @@ uta_rc sim_derive_key(
     size_t len_dv,
     uint8_t key_slot)
 {
+    (void)sim_context; /* suppress unused warning */
     uint8_t key_buffer[KEY_LEN];
     const mbedtls_md_info_t * sha256_hmac = mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);
 
@@ -128,8 +134,10 @@ uta_rc sim_derive_key(
  */
 uta_rc sim_get_random(const uta_context_v1_t * sim_context, uint8_t * random, size_t len_random)
 {
+    (void)sim_context; /* suppress unused warning */
+
     for (int i = 0; i < len_random; i++) {
-        random[i] = rand() % 256;
+        random[i] = (uint8_t)(rand() % 256);
     }
 
     return UTA_SUCCESS;
@@ -143,6 +151,7 @@ uta_rc sim_get_random(const uta_context_v1_t * sim_context, uint8_t * random, si
  */
 uta_rc sim_get_device_uuid(const uta_context_v1_t * sim_context, uint8_t * uuid)
 {
+    (void)sim_context; /* suppress unused warning */
     FILE * fileptr;
     char machine_id[32];
     uint8_t tmp_uuid[16];
@@ -181,4 +190,8 @@ uta_rc sim_get_device_uuid(const uta_context_v1_t * sim_context, uint8_t * uuid)
  * @param[in,out] sim_context Pointer to the internal context struct.
  * @return UTA return code.
  */
-uta_rc sim_self_test(const uta_context_v1_t * sim_context) { return UTA_SUCCESS; }
+uta_rc sim_self_test(const uta_context_v1_t * sim_context)
+{
+    (void)sim_context; /* suppress unused warning */
+    return UTA_SUCCESS;
+}

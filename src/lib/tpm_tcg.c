@@ -200,7 +200,7 @@ uta_rc tpm_close(const uta_context_v1_t * tpm_context)
 
     /* Remove the TSS context */
     Tss2_Tcti_Finalize(tpm_context_w->tcti_ctx);
-    free(tpm_context_w->tcti_ctx);
+    Esys_Free(tpm_context_w->tcti_ctx);
 
     /* Release the accesslock mutex (ignore return code) */
     (void)pthread_mutex_unlock(&tpm_context_w->accesslock);
@@ -237,10 +237,16 @@ uta_rc tpm_derive_key(
 
     int ret_val;
 
+    /* Boundary check for len_dv. In this case it is limited to uint16 */
+    if (UINT16_MAX < len_dv) {
+        /* AS there is no specific error for that case, we return UTA_TA_ERROR */
+        return UTA_TA_ERROR;
+    }
+
     TPM2_HANDLE TPMhmacKeyHandle = 0;
     ESYS_TR hmacKeyHandle = ESYS_TR_NONE;
-    TPM2B_MAX_BUFFER dv_buffer = {.size = len_dv, .buffer = {0}};
-    TPM2B_DIGEST * outHMAC;
+    TPM2B_MAX_BUFFER dv_buffer = {.size = (uint16_t)len_dv, .buffer = {0}};
+    TPM2B_DIGEST * outHMAC = NULL;
 
     /* Check key_slot */
     if (key_slot > (USED_KEY_SLOTS - 1)) {
@@ -323,7 +329,7 @@ uta_rc tpm_derive_key(
     }
 
     memcpy(key, outHMAC->buffer, len_key);
-    free(outHMAC);
+    Esys_Free(outHMAC);
 
     return UTA_SUCCESS;
 }
@@ -343,9 +349,15 @@ uta_rc tpm_get_random(const uta_context_v1_t * tpm_context, uint8_t * random, si
 
     TSS2_RC ret;
     int ret_val;
-    TPM2B_DIGEST * randomBytes;
-    uint32_t bytesRequested = len_random;
-    uint32_t bytesCopied;
+    TPM2B_DIGEST * randomBytes = NULL;
+
+    /* Boundary check for len_random. In this case it is limited to uint16 */
+    if (UINT16_MAX < len_random) {
+        /* AS there is no specific error for that case, we return UTA_TA_ERROR */
+        return UTA_TA_ERROR;
+    }
+
+    uint16_t bytesRequested = (uint16_t)len_random;
 
     /* Lock the device access with the accesslock mutex */
     ret_val = pthread_mutex_lock(&tpm_context_w->accesslock);
@@ -363,7 +375,7 @@ uta_rc tpm_get_random(const uta_context_v1_t * tpm_context, uint8_t * random, si
         return UTA_TA_ERROR;
     }
 
-    for (bytesCopied = 0; bytesCopied < len_random;) {
+    for (uint16_t bytesCopied = 0; bytesCopied < len_random;) {
         bytesRequested = len_random - bytesCopied;
 
         /* Get Random numbers from TPM */
@@ -374,17 +386,16 @@ uta_rc tpm_get_random(const uta_context_v1_t * tpm_context, uint8_t * random, si
             /* Release the accesslock mutex (ignore return code) */
             (void)pthread_mutex_unlock(&tpm_context_w->accesslock);
 
-            free(randomBytes);
+            Esys_Free(randomBytes);
             return UTA_TA_ERROR;
         }
 
-        size_t br;
         /* copy as many bytes as were received or until bytes requested */
-        for (br = 0; (br < randomBytes->size) && (bytesCopied < len_random); br++) {
+        for (size_t br = 0; (br < randomBytes->size) && (bytesCopied < len_random); br++) {
             random[bytesCopied] = randomBytes->buffer[br];
             bytesCopied++;
         }
-        free(randomBytes);
+        Esys_Free(randomBytes);
     }
 
     /* Release the accesslock mutex (ignore return code) */
@@ -487,7 +498,7 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t * tpm_context, uint8_t * uuid)
     }
 
     TPM2B_MAX_BUFFER dv_buffer = {.size = 8, .buffer = {0x44, 0x45, 0x56, 0x49, 0x43, 0x45, 0x49, 0x44}};
-    TPM2B_DIGEST * outHMAC;
+    TPM2B_DIGEST * outHMAC = NULL;
 
     TPMA_SESSION sessionAttributes = TPMA_SESSION_CONTINUESESSION | TPMA_SESSION_ENCRYPT | TPMA_SESSION_DECRYPT;
 
@@ -526,7 +537,7 @@ uta_rc tpm_get_device_uuid(const uta_context_v1_t * tpm_context, uint8_t * uuid)
     /* Copy the first 16 bytes to uuid */
     memcpy(uuid, outHMAC->buffer, 16);
 
-    free(outHMAC);
+    Esys_Free(outHMAC);
 
     /* Format UUID as described in RFC 4122 */
     uuid[6] &= 0x0F; // 0b00001111;
@@ -550,7 +561,7 @@ uta_rc tpm_self_test(const uta_context_v1_t * tpm_context)
     int ret_val;
 
     TSS2_RC ret;
-    TPM2B_MAX_BUFFER * outData;
+    TPM2B_MAX_BUFFER * outData = NULL;
     TPM2_RC testResult;
 
     /* Lock the device access with the accesslock mutex */
@@ -578,10 +589,10 @@ uta_rc tpm_self_test(const uta_context_v1_t * tpm_context)
     }
 
     if (testResult != TSS2_RC_SUCCESS) {
-        free(outData);
+        Esys_Free(outData);
         return UTA_TA_ERROR;
     }
-    free(outData);
+    Esys_Free(outData);
 
     return UTA_SUCCESS;
 }
