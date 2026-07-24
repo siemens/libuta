@@ -156,7 +156,6 @@ uta_rc sim_get_device_uuid(const uta_context_v1_t * sim_context, uint8_t * uuid)
     char machine_id[32];
     uint8_t tmp_uuid[16];
     int ret;
-    int i;
 
     fileptr = fopen("/etc/machine-id", "rb"); // Open the file in binary mode
     if (fileptr == NULL) {
@@ -172,7 +171,7 @@ uta_rc sim_get_device_uuid(const uta_context_v1_t * sim_context, uint8_t * uuid)
     (void)fclose(fileptr); // Close the file
 
     /* Convert the ASCII UUID to hex */
-    for (i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) {
         ret = sscanf(&machine_id[i * 2], "%02hhX", &tmp_uuid[i]);
         if (ret != 1) {
             return UTA_TA_ERROR;
