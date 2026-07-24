@@ -182,21 +182,31 @@ static int loadexternal_hmac_key(char * key_path)
     BYTE hmac_key[HMAC_KEY_SIZE];
     BYTE hmac_seed[HMAC_SEED_SIZE];
     BYTE hmac_key_hash[HMAC_KEY_HASH_SIZE];
+    size_t hmac_key_length = 0;
+    size_t hmac_seed_length = 0;
+    size_t hmac_key_hash_length = 0;
 
     // Load hmac_key from file
-    fileptr = fopen(key_path, "rb");            // Open the file in binary mode
-    fread(hmac_key, HMAC_KEY_SIZE, 1, fileptr); // Read in the entire file
-    (void)fclose(fileptr);                      // Close the file
+    fileptr = fopen(key_path, "rb");                              // Open the file in binary mode
+    hmac_key_length = fread(hmac_key, 1, HMAC_KEY_SIZE, fileptr); // Read in the entire file
+    (void)fclose(fileptr);                                        // Close the file
 
     // Load hmac_seed from file
-    fileptr = fopen("hmac_seed.bin", "rb");       // Open the file in binary mode
-    fread(hmac_seed, HMAC_SEED_SIZE, 1, fileptr); // Read in the entire file
-    (void)fclose(fileptr);                        // Close the file
+    fileptr = fopen("hmac_seed.bin", "rb");                          // Open the file in binary mode
+    hmac_seed_length = fread(hmac_seed, 1, HMAC_SEED_SIZE, fileptr); // Read in the entire file
+    (void)fclose(fileptr);                                           // Close the file
 
     // Load hmac_key_hash from file
-    fileptr = fopen("hmac_key_hash.bin", "rb");           // Open the file in binary mode
-    fread(hmac_key_hash, HMAC_KEY_HASH_SIZE, 1, fileptr); // Read in the entire file
-    (void)fclose(fileptr);                                // Close the file
+    fileptr = fopen("hmac_key_hash.bin", "rb");                                  // Open the file in binary mode
+    hmac_key_hash_length = fread(hmac_key_hash, 1, HMAC_KEY_HASH_SIZE, fileptr); // Read in the entire file
+    (void)fclose(fileptr);                                                       // Close the file
+
+    // Check if we read the expected number of bytes
+    if ((HMAC_KEY_SIZE != hmac_key_length) || (HMAC_SEED_SIZE != hmac_seed_length) ||
+        (HMAC_KEY_HASH_SIZE != hmac_key_hash_length)) {
+        printf("ERROR: File content size mismatch!\n");
+        return EXIT_FAILURE;
+    }
 
     BYTE auth_policy_bin[AUTH_POLICY_BIN_SIZE] = AUTH_POLICY_BIN;
 
