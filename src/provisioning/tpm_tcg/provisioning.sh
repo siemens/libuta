@@ -22,29 +22,33 @@ readonly HMAC_KEY0=0x81000000
 readonly HMAC_KEY1=0x81000001
 readonly ECC=0x81000002
 
+readonly message_divider="#############################"
+
 # Function to print out error message and exit
 by_error_print() {
+  local filename="$1"
   if [[ $? -ne 0 ]]
   then
-    echo "$1"
+    echo "$filename"
     exit 1
   fi
+  return 0
 }
 
 NUMBER_OF_ARGUMENTS=$#
 
 if [[ $NUMBER_OF_ARGUMENTS -eq 0 ]]; then
-  echo "#############################"
+  echo "$message_divider"
   echo "TPM Provisioning:"
   echo "Key Slot 0: random"
   echo "Key Slot 1: random"
 elif [[ $NUMBER_OF_ARGUMENTS -eq 1 ]]; then
-  echo "#############################"
+  echo "$message_divider"
   echo "TPM Provisioning:"
   echo "Key Slot 0: $1"
   echo "Key Slot 1: random"
 elif [[ $NUMBER_OF_ARGUMENTS -eq 2 ]]; then
-  echo "#############################"
+  echo "$message_divider"
   echo "TPM Provisioning:"
   echo "Key Slot 0: $1"
   echo "Key Slot 1: $2"
@@ -60,7 +64,7 @@ else
   echo "$0 <key0_file.bin> <key1_file.bin>"
   exit 1
 fi
-echo "#############################"
+echo "$message_divider"
 
 # Try to clear the needed key slots
 echo ""
@@ -149,14 +153,14 @@ else #the key0.bin file is not given, the TPM generates a HMAC key by itself
    if [[ ! -z $CREATELOADEDSUPPORT ]]
    then
       tpm2_create -G hmac -C primaryKey -u hmac_key_pub.bin -r hmac_key_priv.bin -c loadedHMACKey0
-      by_error_print "Failed to create the HMAC key, exit..."
+      by_error_print "Failed to create the HMAC key0, exit..."
    else
       tpm2_create -G hmac -C primaryKey -u hmac_key_pub.bin -r hmac_key_priv.bin
-      by_error_print "Failed to create the HMAC key, exit..."
+      by_error_print "Failed to create the HMAC key0, exit..."
       echo ""
       echo "# Loading HMAC key0..."
       tpm2_load -C primaryKey -u hmac_key_pub.bin -r hmac_key_priv.bin -c loadedHMACKey0
-      by_error_print "Failed to load the HMAC key, exit..."
+      by_error_print "Failed to load the HMAC key0, exit..."
    fi
 
    echo ""
@@ -202,14 +206,14 @@ else #the key1.bin file is not given, the TPM generates a HMAC key by itself
    if [[ ! -z $CREATELOADEDSUPPORT ]]
    then
       tpm2_create -G hmac -C primaryKey -u hmac_key_pub.bin -r hmac_key_priv.bin -c loadedHMACKey1
-      by_error_print "Failed to create the HMAC key, exit..."
+      by_error_print "Failed to create the HMAC key1, exit..."
    else
       tpm2_create -G hmac -C primaryKey -u hmac_key_pub.bin -r hmac_key_priv.bin
-      by_error_print "Failed to create the HMAC key, exit..."
+      by_error_print "Failed to create the HMAC key1, exit..."
       echo ""
       echo "# Loading HMAC key1..."
       tpm2_load -C primaryKey -u hmac_key_pub.bin -r hmac_key_priv.bin -c loadedHMACKey1
-      by_error_print "Failed to load the HMAC key, exit..."
+      by_error_print "Failed to load the HMAC key1, exit..."
    fi
 
    echo ""
