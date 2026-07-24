@@ -11,6 +11,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   test_uta_sim:
     runs-on: ubuntu-latest
