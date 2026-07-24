@@ -107,8 +107,6 @@ jobs:
   sonar-analysis:
     runs-on: ubuntu-latest
     needs: [build_uta_sim, build_tpm_tcg, build_tpm_ibm]
-    permissions:
-      pull-requests: write   # Required for PR comments & annotations
     steps:
       # Install IBM TSS and TCG TSS to make headers available to SonarCloud
       - name: Install IBM TSS
